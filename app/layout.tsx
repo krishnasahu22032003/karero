@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { ClerkProvider } from "@clerk/nextjs"
-
+import {dark} from "@clerk/themes"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
@@ -21,7 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{
+      theme:dark
+    }}>
       <html lang="en" suppressContentEditableWarning>
         <body
           className={`${inter.className}`}

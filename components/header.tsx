@@ -1,11 +1,9 @@
-"use client";
 
-import { useState } from "react";
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./button";
-
+import { auth } from "@clerk/nextjs/server";
 import {
   PenBox,
   LayoutDashboard,
@@ -32,7 +30,8 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 
-export default function Header() {
+export default async function Header() {
+    const {userId} =await auth()
   return (
     <header className="w-full border-b border-white/10 dark:border-white/10 backdrop-blur-md sticky top-0 z-50">
       <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-5">
@@ -57,7 +56,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6 ml-6">
+          <div className="hidden md:flex items-center gap-6 ml-6 mt-1">
             <Link href="/home" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
             <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</Link>
             <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
@@ -70,8 +69,15 @@ export default function Header() {
 
           {/* Desktop Sign In + Sign Up */}
           <div className="hidden md:flex items-center gap-3 mr-4">
-            <Button variant="primary" className="rounded-full px-6 py-2">Sign Up</Button>
-
+          
+            <SignedOut>
+              <SignUpButton>
+                <Button variant="primary" className="rounded-full px-6 py-2">
+                  Sign Up
+                </Button>
+              </SignUpButton>
+            </SignedOut>
+            
             <SignedOut>
               <SignInButton>
                 <Button variant="primary" className="rounded-full px-6 py-2">
