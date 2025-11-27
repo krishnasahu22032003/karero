@@ -9,6 +9,7 @@ const buttonStyles = cva(
     variants: {
       variant: {
         primary: `
+        cursor-pointer
           bg-gray-900 text-white 
           hover:bg-gray-800 
           dark:bg-gray-100 dark:text-black 
