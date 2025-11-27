@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import ModeToggle from "@/components/mode-toggle";
+import ModeToggle from "@/components/ui/mode-toggle";
 export default function Home() {
   return (
     <div className="bg-red-950 dark:bg-green-200">
