@@ -120,3 +120,77 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ULTRA PREMIUM GRID – gray, elegant, smooth depth */
+.grid-background {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+
+  /* balanced subtle grid */
+  background:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+/* LIGHT MODE — elegant, soft, gray depth */
+:root {
+  --grid-line: rgba(0, 0, 0, 0.05);          /* softer than before */
+  --center-glow: rgba(120, 120, 120, 0.08);  /* gentle gray glow */
+  --outer-glow: rgba(255, 255, 255, 0.35);   /* slight luminosity */
+  --vignette: rgba(0, 0, 0, 0.07);           /* smoother edges */
+}
+
+/* DARK MODE — premium, deep, no purple */
+.dark {
+  --grid-line: rgba(255, 255, 255, 0.035);
+  --center-glow: rgba(150, 150, 150, 0.05);  /* very soft gray glow */
+  --outer-glow: rgba(0, 0, 0, 0.65);         /* more cinematic depth */
+  --vignette: rgba(0, 0, 0, 0.55);           /* darker edges */
+}
+
+/* CENTER GLOW + OUTER GLOW */
+.grid-background::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    /* MUCH REDUCED center glow */
+    radial-gradient(
+      circle at 50% 40%,
+      var(--center-glow) 0%,
+      transparent 65%
+    ),
+
+    /* soft ambient outer depth */
+    radial-gradient(
+      circle at 50% 80%,
+      transparent 20%,
+      var(--outer-glow) 85%
+    );
+
+  opacity: 1;
+}
+
+/* BLURRED SIDE FADES (stronger blur near center) */
+.grid-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to right,
+      var(--vignette) 0%,
+      transparent 20%,
+      transparent 80%,
+      var(--vignette) 100%
+    );
+  
+  /* stronger blurring for premium depth */
+  filter: blur(18px);
+  opacity: 0.95;
+}

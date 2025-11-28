@@ -29,6 +29,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import ModeToggle from "./ui/mode-toggle";
 
 export default async function Header() {
     const {userId} =await auth()
@@ -68,8 +69,8 @@ export default async function Header() {
         <div className="flex items-center gap-4">
 
           {/* Desktop Sign In + Sign Up */}
-          <div className="hidden md:flex items-center gap-3 mr-4">
-          
+          <div className="hidden md:flex items-center gap-3 ">
+          <ModeToggle/>
             <SignedOut>
               <SignUpButton>
                 <Button variant="primary" className="rounded-full px-6 py-2">

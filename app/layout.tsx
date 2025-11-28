@@ -24,7 +24,7 @@ export default function RootLayout({
     <ClerkProvider appearance={{
       theme:dark
     }}>
-      <html lang="en" suppressContentEditableWarning>
+      <html lang="en" suppressContentEditableWarning >
         <body
           className={`${inter.className}`}
         >
