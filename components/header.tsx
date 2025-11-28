@@ -35,7 +35,7 @@ export default async function Header() {
     const {userId} =await auth()
   return (
     <header className="w-full border-b border-white/10 dark:border-white/10 backdrop-blur-md sticky top-0 z-50">
-      <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-5">
+      <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
 
         {/* LEFT: Logo + Nav Items */}
         <div className="flex items-center gap-6">
@@ -57,7 +57,7 @@ export default async function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6 ml-6 mt-1">
+          <div className="hidden md:flex items-center gap-6 ml-6 mt-1 text-[17px] font-medium">
             <Link href="/home" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
             <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</Link>
             <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
@@ -171,7 +171,7 @@ function MobileMenu() {
           <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</Link>
           <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
           <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
-
+          <ModeToggle/>
           <SignedOut>
             <SignUpButton>
               <Button variant="primary" className="w-full mt-2">Sign Up</Button>
