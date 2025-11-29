@@ -25,7 +25,19 @@ const items = [
 
 export default function UseCases() {
   return (
-    <section className="relative w-full py-28 px-6 md:px-16 lg:px-24">
+    <section id="features" className="relative w-full py-28 px-6 md:px-16 lg:px-24">
+<div
+  className="
+    absolute top-5 left-0 w-full h-24
+    bg-gradient-to-b from-black/60 to-transparent
+    dark:from-white/10 dark:to-transparent
+    pointer-events-none
+  "
+/>
+
+
+
+
       {/* Section Heading */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}

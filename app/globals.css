@@ -195,3 +195,6 @@
   opacity: 0.95;
 }
 
+html {
+  scroll-behavior: smooth;
+}

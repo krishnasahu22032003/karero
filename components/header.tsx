@@ -58,10 +58,10 @@ export default async function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6 ml-6 mt-1 text-[17px] font-medium">
-            <Link href="/home" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
+            <Link href="/#home" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
             <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</Link>
-            <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
-            <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
+            <Link href="/#features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
+            <Link href="/#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
           </div>
         </div>
 
@@ -167,10 +167,10 @@ function MobileMenu() {
         {/* MOBILE NAV ITEMS */}
         <div className="mt-6 ml-4 flex flex-col gap-3   ">
 
-          <Link href="/home" className=" text-sm text-muted-foreground hover:text-foreground">Home</Link>
+          <Link href="/#home" className=" text-sm text-muted-foreground hover:text-foreground">Home</Link>
           <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</Link>
-          <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
-          <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
+          <Link href="/#features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
+          <Link href="/#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
           <ModeToggle/>
           <SignedOut>
             <SignUpButton>

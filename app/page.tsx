@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import UseCases from "@/components/UseCases";
+import AboutKarero from "@/components/AboutKarero";
 export default function Home() {
   return (
     <>
@@ -7,6 +8,7 @@ export default function Home() {
      <div className="">
         <Hero />
         <UseCases />
+        <AboutKarero />
       </div>
       </>
   );
