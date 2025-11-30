@@ -3,10 +3,6 @@ import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import { BrainCircuit, BarChart3 } from "lucide-react";
 
-/* ------------------------------------------------------------ */
-/*                       FIXED TILT CARD                        */
-/* ------------------------------------------------------------ */
-
 type TiltCardProps = { children: React.ReactNode };
 
 const TiltCard: React.FC<TiltCardProps> = ({ children }) => {
@@ -48,7 +44,6 @@ const TiltCard: React.FC<TiltCardProps> = ({ children }) => {
         damping: 18,
       }}
     >
-      {/* Hover Glow */}
       <div
         className="
           absolute inset-0 rounded-3xl pointer-events-none
@@ -56,11 +51,11 @@ const TiltCard: React.FC<TiltCardProps> = ({ children }) => {
         "
         style={{
           background:
-            "radial-gradient(circle at 50% 20%, rgba(255,255,255,0.14), transparent 70%)",
+            "radial-linear(circle at 50% 20%, rgba(255,255,255,0.14), transparent 70%)",
         }}
       />
 
-      {/* Sliding Border Sheen */}
+    
       <div
         className="
           absolute inset-0 rounded-3xl pointer-events-none
@@ -68,11 +63,11 @@ const TiltCard: React.FC<TiltCardProps> = ({ children }) => {
         "
         style={{
           background:
-            "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05), rgba(255,255,255,0.1))",
+            "linear-linear(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05), rgba(255,255,255,0.1))",
         }}
       />
 
-      {/* INNER WRAPPER — tilt transform lives HERE */}
+    
       <div
         style={{
           transform: `perspective(1000px) rotateX(${t.rx}deg) rotateY(${t.ry}deg) scale(${t.s})`,
@@ -85,9 +80,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ children }) => {
   );
 };
 
-/* ------------------------------------------------------------ */
-/*                          MAIN COMPONENT                       */
-/* ------------------------------------------------------------ */
+
 
 export default function AboutKarero() {
   return (
@@ -98,13 +91,13 @@ export default function AboutKarero() {
       <div
         className="
           absolute top-0 left-0 w-full h-24
-          bg-gradient-to-b from-black/20 to-transparent
+          bg-linear-to-b from-black/20 to-transparent
           dark:from-white/10 dark:to-transparent
           pointer-events-none
         "
       />
 
-      {/* ---------------- TEXT ---------------- */}
+    
       <div className="text-center mb-28">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -135,15 +128,15 @@ export default function AboutKarero() {
         </motion.p>
       </div>
 
-      {/* ---------------- GRID ---------------- */}
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
 
-        {/* -------- VIDEO CARD -------- */}
+     
         <TiltCard>
           <div
             className="
               relative h-[340px] md:h-[390px]
-              bg-gradient-to-br from-gray-200 to-gray-300 
+              bg-linear-to-br from-gray-200 to-gray-300 
               dark:from-neutral-900 dark:to-neutral-800 
               rounded-3xl shadow-[0_20px_70px_rgba(0,0,0,0.25)]
               overflow-hidden
@@ -158,7 +151,7 @@ export default function AboutKarero() {
               className="absolute inset-0 w-full h-full object-cover opacity-90"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent dark:from-black/60" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/20 to-transparent dark:from-black/60" />
 
             <div className="absolute bottom-7 left-7 right-7 z-10">
               <h3 className="text-2xl font-bold text-white tracking-tight">
@@ -171,19 +164,19 @@ export default function AboutKarero() {
           </div>
         </TiltCard>
 
-        {/* -------- CARD 2 -------- */}
+  
         <TiltCard>
           <div
             className="
               h-[340px] rounded-3xl p-10 flex flex-col justify-between relative
-              bg-gradient-to-br from-white to-gray-100
+              bg-linear-to-br from-white to-gray-100
               dark:from-neutral-900 dark:to-neutral-800
               border border-gray-200/40 dark:border-white/10
               shadow-[0_10px_40px_rgba(0,0,0,0.15)]
               dark:shadow-[0_18px_70px_rgba(0,0,0,0.55)]
             "
           >
-            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-black/10 via-black/5 to-transparent dark:from-white/20 dark:via-white/10" />
+            <div className="absolute top-0 left-0 w-full h-[3px] bg-linear-to-r from-black/10 via-black/5 to-transparent dark:from-white/20 dark:via-white/10" />
 
             <div
               className="
@@ -199,8 +192,8 @@ export default function AboutKarero() {
                 Understands Your Goals
                 <span
                   className="
-                    absolute left-0 -bottom-1 h-[2px] w-0 group-hover:w-full
-                    bg-gradient-to-r from-black/40 via-black/20 to-transparent
+                    absolute left-0 -bottom-1 h-0.5 w-0 group-hover:w-full
+                    bg-linear-to-r from-black/40 via-black/20 to-transparent
                     dark:from-white/40 dark:via-white/20 dark:to-transparent
                     transition-all duration-500
                   "
@@ -214,19 +207,18 @@ export default function AboutKarero() {
           </div>
         </TiltCard>
 
-        {/* -------- CARD 3 -------- */}
         <TiltCard>
           <div
             className="
               h-[340px] rounded-3xl p-10 flex flex-col justify-between relative
-              bg-gradient-to-br from-white to-gray-100
+              bg-linear-to-br from-white to-gray-100
               dark:from-neutral-900 dark:to-neutral-800
               border border-gray-200/40 dark:border-white/10
               shadow-[0_10px_40px_rgba(0,0,0,0.15)]
               dark:shadow-[0_18px_70px_rgba(0,0,0,0.55)]
             "
           >
-            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-black/10 via-black/5 to-transparent dark:from-white/20 dark:via-white/10" />
+            <div className="absolute top-0 left-0 w-full h-[3px] bg-linear-to-r from-black/10 via-black/5 to-transparent dark:from-white/20 dark:via-white/10" />
 
             <div
               className="w-14 h-14 rounded-2xl bg-black/5 dark:bg-white/10 flex items-center justify-center shadow-inner"
@@ -239,8 +231,8 @@ export default function AboutKarero() {
                 Real-Time Skill Tracking
                 <span
                   className="
-                    absolute left-0 -bottom-1 h-[2px] w-0 group-hover:w-full
-                    bg-gradient-to-r from-black/40 via-black/20 to-transparent
+                    absolute left-0 -bottom-1 h-0.5 w-0 group-hover:w-full
+                    bg-linear-to-r from-black/40 via-black/20 to-transparent
                     dark:from-white/40 dark:via-white/20 dark:to-transparent
                     transition-all duration-500
                   "
@@ -255,12 +247,12 @@ export default function AboutKarero() {
         </TiltCard>
       </div>
 
-      {/* -------- BOTTOM VIDEO CARD -------- */}
+     
       <TiltCard>
         <div
           className="
             mt-10 h-[330px] md:h-[380px] rounded-3xl 
-            bg-gradient-to-br from-gray-200 to-gray-300 
+            bg-linear-to-br from-gray-200 to-gray-300 
             dark:from-neutral-900 dark:to-neutral-800 
             shadow-[0_25px_80px_rgba(0,0,0,0.3)]
             overflow-hidden relative
@@ -275,13 +267,13 @@ export default function AboutKarero() {
             className="absolute inset-0 w-full h-full object-cover opacity-[0.88]"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-r from-black/60 via-black/25 to-transparent" />
 
-          <div className="absolute left-10 top-1/2 -translate-y-1/2 max-w-xl">
+          <div className="absolute left-10 bottom-0 -translate-y-1/2 max-w-xl">
             <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               Your Career. Reimagined.
             </h3>
-            <p className="text-gray-300 mt-3 leading-relaxed text-lg">
+            <p className="text-gray-300 mt-3  leading-relaxed text-lg">
               Karero adapts with intelligent guidance that grows with you.
             </p>
           </div>

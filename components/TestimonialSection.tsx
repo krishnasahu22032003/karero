@@ -4,10 +4,6 @@ import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { useRef, useState } from "react";
 
-/* ------------------------------------------------------------ */
-/*                   FIXED TILT CARD (WORKING)                  */
-/* ------------------------------------------------------------ */
-
 type TiltProps = { children: React.ReactNode };
 
 const TiltCard: React.FC<TiltProps> = ({ children }) => {
@@ -49,7 +45,7 @@ const TiltCard: React.FC<TiltProps> = ({ children }) => {
         ease: [0.16, 1, 0.3, 1],
       }}
     >
-      {/* Glow Bloom */}
+
       <div
         className="
           absolute inset-0 rounded-3xl pointer-events-none 
@@ -57,11 +53,10 @@ const TiltCard: React.FC<TiltProps> = ({ children }) => {
         "
         style={{
           background:
-            "radial-gradient(circle at 50% 25%, rgba(255,255,255,0.15), transparent 70%)",
+            "radial-linear(circle at 50% 25%, rgba(255,255,255,0.15), transparent 70%)",
         }}
       />
 
-      {/* Border Shimmer */}
       <div
         className="
           absolute inset-0 rounded-3xl pointer-events-none 
@@ -69,11 +64,11 @@ const TiltCard: React.FC<TiltProps> = ({ children }) => {
         "
         style={{
           background:
-            "linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05), rgba(255,255,255,0.1))",
+            "linear-linear(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05), rgba(255,255,255,0.1))",
         }}
       />
 
-      {/* INNER TILT WRAPPER — tilt lives here */}
+   
       <div
         style={{
           transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) scale(${tilt.s})`,
@@ -86,9 +81,7 @@ const TiltCard: React.FC<TiltProps> = ({ children }) => {
   );
 };
 
-/* ------------------------------------------------------------ */
-/*                     TESTIMONIAL DATA                         */
-/* ------------------------------------------------------------ */
+
 
 const testimonials = [
   {
@@ -129,9 +122,7 @@ const testimonials = [
   },
 ];
 
-/* ------------------------------------------------------------ */
-/*                     MAIN COMPONENT                           */
-/* ------------------------------------------------------------ */
+
 
 export default function Testimonials() {
   return (
@@ -142,12 +133,12 @@ export default function Testimonials() {
             <div
         className="
           absolute top-0 left-0 w-full h-24
-          bg-gradient-to-b from-black/20 to-transparent
+          bg-linear-to-b from-black/20 to-transparent
           dark:from-white/10 dark:to-transparent
           pointer-events-none
         "
       />
-      {/* Heading */}
+
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -167,14 +158,14 @@ export default function Testimonials() {
         </p>
       </motion.div>
 
-      {/* Cards */}
+
       <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {testimonials.map((t, i) => (
           <TiltCard key={i}>
             <div
               className="
                 p-9 rounded-3xl h-[360px]
-                bg-gradient-to-br from-white to-gray-100
+                bg-linear-to-br from-white to-gray-100
                 dark:from-neutral-900 dark:to-neutral-800
                 border border-gray-200/40 dark:border-white/10
                 shadow-[0_10px_40px_rgba(0,0,0,0.15)]
@@ -182,7 +173,7 @@ export default function Testimonials() {
                 flex flex-col justify-between
               "
             >
-              {/* Avatar */}
+  
               <div className="flex justify-center mb-4">
                 <img
                   src={t.image}
@@ -196,7 +187,7 @@ export default function Testimonials() {
                 />
               </div>
 
-              {/* Stars */}
+
               <div className="flex justify-center gap-1 text-yellow-400 dark:text-yellow-300 mb-2">
                 {Array(5)
                   .fill(0)
@@ -205,19 +196,19 @@ export default function Testimonials() {
                   ))}
               </div>
 
-              {/* Review */}
+     
               <p className="text-gray-700 dark:text-gray-300 text-center text-sm leading-relaxed mb-4">
                 “{t.text}”
               </p>
 
-              {/* Name */}
+ 
               <div className="text-center">
                 <h3 className="text-lg font-semibold text-black dark:text-white relative inline-block">
                   {t.name}
                   <span
                     className="
-                      absolute left-0 -bottom-1 h-[2px] w-0
-                      bg-gradient-to-r 
+                      absolute left-0 -bottom-1 h-0.5 w-0
+                      bg-linear-to-r 
                       from-black/40 via-black/20 to-transparent
                       dark:from-white/40 dark:via-white/20 dark:to-transparent
                       transition-all duration-500

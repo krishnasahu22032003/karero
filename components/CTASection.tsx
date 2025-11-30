@@ -5,10 +5,6 @@ import { ArrowRight } from "lucide-react";
 import { useRef, useState } from "react";
 import Link from "next/link";
 
-/* ------------------------------------------------------------ */
-/*               T I L T   (MATCHES TESTIMONIALS)               */
-/* ------------------------------------------------------------ */
-
 const Tilt = ({ children }: { children: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ rx: 0, ry: 0, s: 1 });
@@ -21,7 +17,7 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
     const px = (e.clientX - rect.left) / rect.width;
     const py = (e.clientY - rect.top) / rect.height;
 
-    // Reduced tilt — hierarchy matched with testimonials
+
     setTilt({
       rx: (py - 0.9) * -6,
       ry: (px - 0.9) * 8,
@@ -38,7 +34,7 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
       onMouseLeave={onLeave}
       className="group relative rounded-3xl cursor-pointer overflow-hidden backdrop-blur-xl"
     >
-      {/* Glow Bloom */}
+   
       <div
         className="
           absolute inset-0 rounded-3xl pointer-events-none 
@@ -46,11 +42,11 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
         "
         style={{
           background:
-            "radial-gradient(circle at 50% 25%, rgba(255,255,255,0.15), transparent 70%)",
+            "radial-linear(circle at 50% 25%, rgba(255,255,255,0.15), transparent 70%)",
         }}
       />
 
-      {/* Border Shimmer */}
+     
       <div
         className="
           absolute inset-0 rounded-3xl pointer-events-none 
@@ -58,11 +54,11 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
         "
         style={{
           background:
-            "linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05), rgba(255,255,255,0.1))",
+            "linear-linear(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05), rgba(255,255,255,0.1))",
         }}
       />
 
-      {/* INNER tilt wrapper */}
+    
       <div
         style={{
           transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) scale(${tilt.s})`,
@@ -75,9 +71,6 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-/* ------------------------------------------------------------ */
-/*                       CTA SECTION                            */
-/* ------------------------------------------------------------ */
 
 export default function CTASection() {
   return (
@@ -88,17 +81,17 @@ export default function CTASection() {
         mx-auto overflow-hidden
       "
     >
-      {/* Ambient gradient top */}
+   
       <div
         className="
           absolute top-0 left-0 w-full h-24
-          bg-gradient-to-b from-black/20 to-transparent
+          bg-linear-to-b from-black/20 to-transparent
           dark:from-white/10 dark:to-transparent
           pointer-events-none
         "
       />
 
-      {/* Subtle particles (same minimal theme) */}
+
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(30)].map((_, i) => (
           <motion.span
@@ -124,7 +117,7 @@ export default function CTASection() {
         ))}
       </div>
 
-      {/* Main CTA Card */}
+
       <Tilt>
         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.96 }}
@@ -133,7 +126,7 @@ export default function CTASection() {
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           className="
             relative rounded-3xl p-12 md:p-20 
-            bg-gradient-to-br from-white to-gray-100
+            bg-linear-to-br from-white to-gray-100
             dark:from-neutral-900 dark:to-neutral-800
             border border-gray-200/40 dark:border-white/10
             shadow-[0_10px_40px_rgba(0,0,0,0.15)]
@@ -141,12 +134,12 @@ export default function CTASection() {
             overflow-hidden
           "
         >
-          {/* Subtle white glow ring */}
+          
           <motion.div
             className="
               absolute -top-28 -right-28 w-[380px] h-[380px]
               rounded-full opacity-20
-              bg-gradient-to-br from-white/50 to-gray-200/10
+              bg-linear-to-br from-white/50 to-gray-200/10
               dark:from-white/10 dark:to-white/5
               blur-[110px]
             "
@@ -154,7 +147,7 @@ export default function CTASection() {
             transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
           />
 
-          {/* Heading */}
+      
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -169,7 +162,7 @@ export default function CTASection() {
           </span>
           </motion.h2>
 
-          {/* Description */}
+       
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -184,7 +177,7 @@ export default function CTASection() {
             and move confidently toward your dream future.
           </motion.p>
 
-          {/* CTA Button */}
+    
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

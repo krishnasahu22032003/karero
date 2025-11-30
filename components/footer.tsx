@@ -8,25 +8,25 @@ export default function Footer() {
       className="
         relative w-full 
         pt-8 pb-6
-        bg-gradient-to-b from-transparent to-gray-100
+        bg-linear-to-b from-transparent to-gray-100
         dark:from-transparent dark:to-neutral-900
         border-t border-gray-900/40 dark:border-white/10
       "
     >
-      {/* Softer, smaller top glow */}
+
       <div
         className="
-          absolute top-[-20px] left-1/2 -translate-x-1/2 
-          w-[180px] h-[40px]
+          absolute -top-5 left-1/2 -translate-x-1/2 
+          w-[180px] h-10
           bg-white/20 dark:bg-white/5 
           blur-xl rounded-full pointer-events-none
           opacity-60
         "
       />
 
-      {/* Content */}
+
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center">
-        {/* Brand Name */}
+     
         <h2
           className="
             text-lg font-semibold tracking-tight 
@@ -36,18 +36,17 @@ export default function Footer() {
           Karero AI Coach
         </h2>
 
-        {/* Divider */}
         <div
           className="
-            w-12 h-[2px] mx-auto mt-3 mb-5
-            bg-gradient-to-r 
+            w-12 h-0.5 mx-auto mt-3 mb-5
+            bg-linear-to-r 
             from-black/40 via-black/20 to-transparent
             dark:from-white/30 dark:via-white/15 dark:to-transparent
             rounded-full
           "
         />
 
-        {/* Copyright */}
+
         <p
           className="
             text-xs text-gray-600 dark:text-gray-400
@@ -68,7 +67,7 @@ export default function Footer() {
           <span className="font-medium">Krishna Sahu</span>
         </p>
 
-        {/* Micro Text */}
+
         <p
           className="
             text-[11px] mt-2 

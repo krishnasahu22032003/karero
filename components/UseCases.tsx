@@ -4,10 +4,6 @@ import { motion, type Variants } from "framer-motion";
 import { useRef, useState } from "react";
 import { Briefcase, Bot, BookOpen, FileText } from "lucide-react";
 
-/* ------------------------------------------------------------ */
-/*                     FIXED TILT CARD                          */
-/* ------------------------------------------------------------ */
-
 const TiltCard = ({ children }: { children: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [t, setT] = useState({ rx: 0, ry: 0, s: 1 });
@@ -36,7 +32,7 @@ const TiltCard = ({ children }: { children: React.ReactNode }) => {
       onMouseLeave={onLeave}
       className="group relative rounded-3xl cursor-pointer overflow-hidden"
     >
-      {/* Glow */}
+
       <div
         className="
           absolute inset-0 rounded-3xl pointer-events-none 
@@ -44,11 +40,11 @@ const TiltCard = ({ children }: { children: React.ReactNode }) => {
         "
         style={{
           background:
-            "radial-gradient(circle at 50% 20%, rgba(255,255,255,0.14), transparent 70%)",
+            "radial-linear(circle at 50% 20%, rgba(255,255,255,0.14), transparent 70%)",
         }}
       />
 
-      {/* Sheen */}
+
       <div
         className="
           absolute inset-0 rounded-3xl pointer-events-none
@@ -56,11 +52,11 @@ const TiltCard = ({ children }: { children: React.ReactNode }) => {
         "
         style={{
           background:
-            "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05), rgba(255,255,255,0.08))",
+            "linear-linear(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05), rgba(255,255,255,0.08))",
         }}
       />
 
-      {/* Tilt transform wrapper */}
+ 
       <div
         style={{
           transform: `perspective(1000px) rotateX(${t.rx}deg) rotateY(${t.ry}deg) scale(${t.s})`,
@@ -72,10 +68,6 @@ const TiltCard = ({ children }: { children: React.ReactNode }) => {
     </div>
   );
 };
-
-/* ------------------------------------------------------------ */
-/*                      ORIGINAL CODE                           */
-/* ------------------------------------------------------------ */
 
 const titleVariant: Variants = {
   initial: { opacity: 0, y: 8, letterSpacing: "-0.03em" },
@@ -103,13 +95,12 @@ export default function UseCases() {
       <div
         className="
           absolute top-5 left-0 w-full h-24
-          bg-gradient-to-b from-black/20 to-transparent
+          bg-linear-to-b from-black/20 to-transparent
           dark:from-white/10 dark:to-transparent
           pointer-events-none
         "
       />
 
-      {/* Section Heading */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -129,7 +120,7 @@ export default function UseCases() {
         </p>
       </motion.div>
 
-      {/* Cards */}
+
       <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {items.map((item, i) => (
           <TiltCard key={i}>
@@ -148,7 +139,7 @@ export default function UseCases() {
               }}
               className="
                 group relative rounded-3xl p-7 
-                bg-gradient-to-br from-white to-gray-100
+                bg-linear-to-br from-white to-gray-100
                 dark:from-neutral-900 dark:to-neutral-800
                 shadow-[0_10px_35px_rgba(0,0,0,0.14)]
                 dark:shadow-[0_18px_70px_rgba(0,0,0,0.55)]
@@ -157,10 +148,9 @@ export default function UseCases() {
                 overflow-hidden
               "
             >
-              {/* Title Glow */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-40 transition duration-500 bg-gradient-to-br from-blue-400/20 via-purple-400/10 to-transparent dark:from-blue-500/10 dark:via-purple-500/5 blur-xl" />
+           
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-40 transition duration-500 bg-linear-to-br from-blue-400/20 via-purple-400/10 to-transparent dark:from-blue-500/10 dark:via-purple-500/5 blur-xl" />
 
-              {/* Icon */}
               <div
                 className="
                   w-12 h-12 rounded-xl flex items-center justify-center
@@ -174,7 +164,6 @@ export default function UseCases() {
                 {item.icon}
               </div>
 
-              {/* Title */}
               <motion.h3
                 variants={titleVariant}
                 initial="initial"
@@ -185,8 +174,8 @@ export default function UseCases() {
 
                 <span
                   className="
-                    absolute left-0 -bottom-1 h-[2px] w-0 
-                    bg-gradient-to-r 
+                    absolute left-0 -bottom-1 h-0.5 w-0 
+                    bg-linear-to-r 
                     from-black/40 via-black/20 to-transparent
                     dark:from-white/40 dark:via-white/20 dark:to-transparent
                     transition-all duration-500

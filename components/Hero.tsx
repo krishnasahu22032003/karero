@@ -6,7 +6,7 @@ import { SignUpButton } from "@clerk/nextjs";
 import { SignedOut, SignInButton } from "@clerk/clerk-react";
 import { Button } from "./button";
 const WORDS = ["better", "faster", "smarter", "clearer"];
-const CYCLE_MS = 2500; // 2.5s per word
+const CYCLE_MS = 2500; 
 
 export default function Hero() {
   const [index, setIndex] = useState(0);
@@ -23,22 +23,20 @@ export default function Hero() {
     return () => clearInterval(id);
   }, []);
 
-  // 3D tilt handlers for right card
   const onMove = (e: React.MouseEvent) => {
     const el = cardRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width; // 0..1
-    const py = (e.clientY - rect.top) / rect.height; // 0..1
-    const ry = (px - 0.9) * 10; // rotateY -5..5
-    const rx = (py - 0.9) * -6; // rotateX -3..3
+    const px = (e.clientX - rect.left) / rect.width; 
+    const py = (e.clientY - rect.top) / rect.height; 
+    const ry = (px - 0.9) * 10;
+    const rx = (py - 0.9) * -6;
     const s = 1.015;
     setCardTransform({ rx, ry, s });
   };
 
   const onLeave = () => setCardTransform({ rx: 0, ry: 0, s: 1 });
 
-  // Framer motion variants
 
 
  const container: Variants = {
@@ -71,7 +69,7 @@ export default function Hero() {
 
   return (
     <section id="hero" className="relative w-full max-w-[1400px] mx-auto px-6 md:px-12 -mt-6 md:-mt-10 pt-8 md:pt-20">
-      {/* subtle decorative glow / floating orbs (motion) */}
+
       <motion.div
         aria-hidden
         initial={{ opacity: 0 }}
@@ -91,7 +89,7 @@ export default function Hero() {
         variants={container}
         className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start"
       >
-        {/* LEFT */}
+ 
         <motion.div variants={item} className="flex flex-col gap-5">
           <div className="flex items-center gap-3">
   <span
@@ -124,10 +122,10 @@ export default function Hero() {
             style={{ letterSpacing: "-0.02em" }}
           >
             <span className="block">Build your career</span>
-            <span className="block flex items-center mt-2">
+            <span className=" flex items-center mt-2">
               <span className="text-neutral-600 dark:text-neutral-300 mr-2 text-2xl md:text-6xl font-extrabold">10×</span>
 
-              {/* animated badge: dynamic word */}
+       
               <span className="relative inline-flex">
 <AnimatePresence mode="wait">
   <motion.span
@@ -161,7 +159,7 @@ export default function Hero() {
   </motion.span>
 </AnimatePresence>
 
-                {/* micro hover shimmer over badge */}
+            
                 <motion.span
                   whileHover={{ x: 6, opacity: 1 }}
                   initial={{ opacity: 0 }}
@@ -203,13 +201,12 @@ export default function Hero() {
            
           </motion.div>
 
-          {/* small logos/partners row */}
+   
       <motion.div 
   variants={item}
   className="mt-8 flex items-center gap-5"
 >
 
-  {/* LEFT SMALL LABEL */}
   <span className="
     text-xs font-medium tracking-wide
     text-gray-500 dark:text-gray-400
@@ -218,10 +215,10 @@ export default function Hero() {
     Trusted by teams
   </span>
 
-  {/* BRAND AVATARS */}
+
   <div className="flex items-center gap-3">
     
-    {/* LOOP FOR 3 BRANDS */}
+    
     {["Nexus", "Rapid", "Trident"].map((brand, i) => (
       <motion.div
         key={i}
@@ -232,9 +229,9 @@ export default function Hero() {
           flex items-center justify-center
           text-[0.65rem] font-semibold
 
-          bg-gradient-to-br 
+          bg-linear-to-br 
           from-white/70 to-gray-200/70 
-          dark:from-white/10 dark:to-white/[0.03]
+          dark:from-white/10 dark:to-white/3
 
           text-gray-800 dark:text-white/80
           backdrop-blur-xl
@@ -248,7 +245,7 @@ export default function Hero() {
 
       
 
-        {/* BRAND INITIAL */}
+  
         {brand[0]}
 
        
@@ -261,10 +258,10 @@ export default function Hero() {
 </motion.div>
 </motion.div>
 
-        {/* RIGHT */}
+        
 <motion.div variants={item} className="relative flex items-center justify-center">
 
-  {/* 🔥 Moving light strip around the card (no border, no box) */}
+
   <motion.div
     className="absolute inset-0 rounded-3xl pointer-events-none"
     animate={{
@@ -277,7 +274,7 @@ export default function Hero() {
     }}
     style={{
       background: `
-        linear-gradient(
+        linear-linear(
           120deg,
           rgba(255,255,255,0.0) 0%,
           rgba(255,255,255,0.15) 40%,
@@ -301,7 +298,7 @@ export default function Hero() {
   className="
     relative w-full max-w-[620px] h-[420px] md:h-[400px]
     rounded-3xl overflow-hidden
-    bg-gradient-to-br from-gray-200 to-gray-400
+    bg-linear-to-br from-gray-200 to-gray-400
     dark:from-neutral-900 dark:to-neutral-800
     shadow-[0_20px_70px_rgba(0,0,0,0.25)]
     dark:shadow-[0_28px_90px_rgba(0,0,0,0.7)]
@@ -313,8 +310,6 @@ export default function Hero() {
   "
 >
 
-
-    {/* 🎥 VIDEO */}
     <div className="absolute inset-0 flex items-center justify-center">
       <video
         src="/video.mp4"
@@ -332,7 +327,7 @@ export default function Hero() {
       />
     </div>
 
-    {/* ✨ Subtle ambient inner glow (very soft) */}
+
     <motion.div
       className="absolute inset-0 pointer-events-none"
       animate={{ opacity: [0.03, 0.08, 0.03] }}
