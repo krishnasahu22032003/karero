@@ -30,8 +30,8 @@ export default function Hero() {
     const rect = el.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width; // 0..1
     const py = (e.clientY - rect.top) / rect.height; // 0..1
-    const ry = (px - 0.5) * 10; // rotateY -5..5
-    const rx = (py - 0.5) * -6; // rotateX -3..3
+    const ry = (px - 0.9) * 10; // rotateY -5..5
+    const rx = (py - 0.9) * -6; // rotateX -3..3
     const s = 1.015;
     setCardTransform({ rx, ry, s });
   };
@@ -70,7 +70,7 @@ export default function Hero() {
 
 
   return (
-    <section id="hero" className="relative w-full max-w-[1300px] mx-auto px-6 md:px-12 -mt-6 md:-mt-10 pt-8 md:pt-20">
+    <section id="hero" className="relative w-full max-w-[1400px] mx-auto px-6 md:px-12 -mt-6 md:-mt-10 pt-8 md:pt-20">
       {/* subtle decorative glow / floating orbs (motion) */}
       <motion.div
         aria-hidden
@@ -290,28 +290,29 @@ export default function Hero() {
     }}
   />
 
-  <motion.div
-    ref={cardRef}
-    onMouseMove={onMove}
-    onMouseLeave={onLeave}
-    style={{
-      transform: `perspective(1200px) rotateX(${cardTransform.rx}deg) rotateY(${cardTransform.ry}deg)`
-    }}
-    transition={{ type: "spring", stiffness: 120, damping: 20 }}
-    className="
-      relative w-full max-w-[620px] h-[420px] md:h-[400px]
-      rounded-3xl overflow-hidden
-      bg-gradient-to-br from-gray-200 to-gray-400
-      dark:from-neutral-900 dark:to-neutral-800
-      shadow-[0_20px_70px_rgba(0,0,0,0.25)]
-      dark:shadow-[0_28px_90px_rgba(0,0,0,0.7)]
-      backdrop-blur-xl
-      hover:scale-[1.02]
-      hover:shadow-[0_30px_110px_rgba(0,0,0,0.3)]
-      transition-all duration-300
-      group
-    "
-  >
+<div
+  ref={cardRef}
+  onMouseMove={onMove}
+  onMouseLeave={onLeave}
+  style={{
+    transform: `perspective(1200px) rotateX(${cardTransform.rx}deg) rotateY(${cardTransform.ry}deg)`,
+    transition: "transform 120ms ease-out",
+  }}
+  className="
+    relative w-full max-w-[620px] h-[420px] md:h-[400px]
+    rounded-3xl overflow-hidden
+    bg-gradient-to-br from-gray-200 to-gray-400
+    dark:from-neutral-900 dark:to-neutral-800
+    shadow-[0_20px_70px_rgba(0,0,0,0.25)]
+    dark:shadow-[0_28px_90px_rgba(0,0,0,0.7)]
+    backdrop-blur-xl
+    hover:scale-[1.02]
+    hover:shadow-[0_30px_110px_rgba(0,0,0,0.3)]
+    transition-all duration-300
+    group
+  "
+>
+
 
     {/* 🎥 VIDEO */}
     <div className="absolute inset-0 flex items-center justify-center">
@@ -340,7 +341,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-white/20 dark:bg-white/5 blur-3xl" />
     </motion.div>
 
-  </motion.div>
+  </div>
 </motion.div>
 
 

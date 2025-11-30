@@ -118,9 +118,9 @@ export default function UseCases() {
         className="flex flex-col items-center gap-3 text-center"
       >
         <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-black dark:text-zinc-100">
-          What{" "}
+          What You{" "}
           <span className="text-neutral-500 dark:text-neutral-300">
-            You Can Do With karero AI
+             Can Do With karero AI
           </span>
         </h2>
 

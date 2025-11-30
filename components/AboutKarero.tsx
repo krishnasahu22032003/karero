@@ -93,7 +93,7 @@ export default function AboutKarero() {
   return (
     <section
       id="about"
-      className="relative w-full py-28 px-6 md:px-16 lg:px-24 max-w-[1400px] mx-auto"
+      className="relative w-full py-29 px-6 md:px-16 lg:px-24 mx-auto"
     >
       <div
         className="
@@ -113,9 +113,9 @@ export default function AboutKarero() {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-4xl font-extrabold tracking-tight text-black dark:text-white"
         >
-          About{" "}
+          About  Karero{" "}
           <span className="text-neutral-500 dark:text-neutral-300">
-            Karero AI Coach
+            AI Coach
           </span>
         </motion.h2>
 

@@ -137,7 +137,7 @@ export default function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="relative w-full py-28 px-6 md:px-16 lg:px-24 max-w-[1400px] mx-auto"
+      className="relative w-full py-28 px-6 md:px-16 lg:px-24 mx-auto"
     >
             <div
         className="
@@ -168,7 +168,7 @@ export default function Testimonials() {
       </motion.div>
 
       {/* Cards */}
-      <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {testimonials.map((t, i) => (
           <TiltCard key={i}>
             <div
