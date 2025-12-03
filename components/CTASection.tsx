@@ -17,7 +17,6 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
     const px = (e.clientX - rect.left) / rect.width;
     const py = (e.clientY - rect.top) / rect.height;
 
-
     setTilt({
       rx: (py - 0.9) * -6,
       ry: (px - 0.9) * 8,
@@ -34,31 +33,22 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
       onMouseLeave={onLeave}
       className="group relative rounded-3xl cursor-pointer overflow-hidden backdrop-blur-xl"
     >
-   
       <div
-        className="
-          absolute inset-0 rounded-3xl pointer-events-none 
-          opacity-0 group-hover:opacity-20 transition duration-500
-        "
+        className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 group-hover:opacity-20 transition duration-500"
         style={{
           background:
             "radial-linear(circle at 50% 25%, rgba(255,255,255,0.15), transparent 70%)",
         }}
       />
 
-     
       <div
-        className="
-          absolute inset-0 rounded-3xl pointer-events-none 
-          opacity-0 group-hover:opacity-25 transition duration-500
-        "
+        className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 group-hover:opacity-25 transition duration-500"
         style={{
           background:
             "linear-linear(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05), rgba(255,255,255,0.1))",
         }}
       />
 
-    
       <div
         style={{
           transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) scale(${tilt.s})`,
@@ -71,7 +61,6 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-
 export default function CTASection() {
   return (
     <section
@@ -81,7 +70,6 @@ export default function CTASection() {
         mx-auto overflow-hidden
       "
     >
-   
       <div
         className="
           absolute top-0 left-0 w-full h-24
@@ -90,7 +78,6 @@ export default function CTASection() {
           pointer-events-none
         "
       />
-
 
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(30)].map((_, i) => (
@@ -122,8 +109,12 @@ export default function CTASection() {
         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.96 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{
+            type: "spring",
+            stiffness: 150,
+            damping: 18,
+          }}
           className="
             relative rounded-3xl p-12 md:p-20 
             bg-linear-to-br from-white to-gray-100
@@ -134,7 +125,7 @@ export default function CTASection() {
             overflow-hidden
           "
         >
-          
+       
           <motion.div
             className="
               absolute -top-28 -right-28 w-[380px] h-[380px]
@@ -144,63 +135,63 @@ export default function CTASection() {
               blur-[110px]
             "
             animate={{ rotate: 360 }}
-            transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+            transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
           />
-
-      
           <motion.h2
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
             className="
               text-4xl md:text-4xl font-extrabold tracking-tight 
               text-black dark:text-white text-center
             "
           >
-            Ready to  <span className="text-neutral-500 dark:text-neutral-300">
-            Say About Karero
-          </span>
+            Ready to{" "}
+            <span className="text-neutral-500 dark:text-neutral-300">
+              Say About Karero
+            </span>
           </motion.h2>
 
-       
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, delay: 0.1 }}
             className="
               max-w-2xl mx-auto mt-6 
               text-gray-600 dark:text-gray-300/90
               text-center text-lg md:text-base leading-relaxed
             "
           >
-            Join thousands using Karero to unlock new opportunities, sharpen skills,
-            and move confidently toward your dream future.
+            Join thousands using Karero to unlock new opportunities, sharpen
+            skills, and move confidently toward your dream future.
           </motion.p>
 
-    
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.7 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.7, delay: 0.15 }}
             className="mt-10 flex justify-center"
           >
             <Link href="#home" scroll={true}>
-  <motion.button
-    whileHover={{ scale: 1.06 }}
-    whileTap={{ scale: 0.96 }}
-    className=" px-8 py-4 rounded-full font-semibold text-lg
-                bg-black text-white 
-                dark:bg-white dark:text-black
-                shadow-[0_10px_35px_rgba(0,0,0,0.25)]
-                dark:shadow-[0_15px_50px_rgba(255,255,255,0.12)]
-                flex items-center gap-2 transition-all cursor-pointer
-              "
-  >
-    Start Your Journey
-    <ArrowRight className="w-5 h-5" />
-  </motion.button>
-</Link>
-
+              <motion.button
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.96 }}
+                className="
+                  px-8 py-4 rounded-full font-semibold text-lg
+                  bg-black text-white 
+                  dark:bg-white dark:text-black
+                  shadow-[0_10px_35px_rgba(0,0,0,0.25)]
+                  dark:shadow-[0_15px_50px_rgba(255,255,255,0.12)]
+                  flex items-center gap-2 transition-all cursor-pointer
+                "
+              >
+                Start Your Journey
+                <ArrowRight className="w-5 h-5" />
+              </motion.button>
+            </Link>
           </motion.div>
         </motion.div>
       </Tilt>

@@ -18,7 +18,6 @@ const faqs = [
     a: "Absolutely. Karero simulates real interview sessions, evaluates your responses, and gives you personalized improvement points tailored to your dream role.",
   },
 
-  // Extra questions
   {
     q: "Does Karero help build AI-optimized resumes?",
     a: "Yes — Karero's Resume Builder uses ATS-friendly structure, role-specific keywords, and phrasing enhancements so your resume stands out for both recruiters and automated systems.",
@@ -54,7 +53,6 @@ export default function FAQSection() {
         "
       />
 
-      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -72,7 +70,6 @@ export default function FAQSection() {
         </p>
       </motion.div>
 
-      {/* FAQ List */}
       <motion.div
         className="mt-14 md:mt-16 max-w-4xl mx-auto space-y-4"
         initial="hidden"
@@ -102,7 +99,6 @@ export default function FAQSection() {
                 overflow-hidden transition-all duration-300
               "
             >
-              {/* Question */}
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
                 className="w-full px-6 py-5 flex justify-between items-center text-left group"
@@ -123,8 +119,6 @@ export default function FAQSection() {
                   <ChevronDown size={22} />
                 </motion.div>
               </button>
-
-              {/* Answer */}
               <AnimatePresence>
                 {isOpen && (
                   <motion.div
