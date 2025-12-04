@@ -30,8 +30,10 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import ModeToggle from "./ui/mode-toggle";
+import { CheckUser } from "@/lib/checkUser";
 
 export default async function Header() {
+  await CheckUser()
     const {userId} =await auth()
   return (
     <header className="w-full border-b border-white/10 dark:border-white/10 backdrop-blur-md sticky top-0 z-50">
@@ -57,12 +59,16 @@ export default async function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6 ml-6 mt-1 text-[17px] font-medium">
-            <Link href="/#home" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
-            <Link href="/#testimonials" className="text-sm text-muted-foreground hover:text-foreground">Testimonials</Link>
-            <Link href="/#features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
-            <Link href="/#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
-          </div>
+         {/* Desktop Navigation */}
+<SignedOut>
+  <div className="hidden md:flex items-center gap-6 ml-6 mt-1 text-[17px] font-medium">
+    <Link href="/#home" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
+    <Link href="/#testimonials" className="text-sm text-muted-foreground hover:text-foreground">Testimonials</Link>
+    <Link href="/#features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
+    <Link href="/#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
+  </div>
+</SignedOut>
+
         </div>
 
         {/* RIGHT SIDE + MOBILE MENU */}

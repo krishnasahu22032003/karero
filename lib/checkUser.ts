@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server"
-import { pg } from "./prisma"
+import {prisma} from "./prisma"
 
 export const CheckUser = async () => {
 
@@ -11,7 +11,7 @@ export const CheckUser = async () => {
 
     try {
 
-        const loggedInUser = await pg.user.findUnique({
+        const loggedInUser = await prisma.user.findUnique({
             where: {
                 clerkUserId: user.id
             }
@@ -23,7 +23,7 @@ export const CheckUser = async () => {
 
         const name = `${user.firstName} ${user.lastName}`;
 
-        const newsuer = await pg.user.create({
+        const newsuer = await prisma.user.create({
             data: {
                 clerkUserId: user.id,
                 name: name,
