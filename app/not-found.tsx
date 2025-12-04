@@ -17,7 +17,7 @@ export default function NotFound() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5 }}
         className="
-          text-6xl md:text-7xl font-extrabold tracking-tight 
+          text-6xl md:text-6xl font-extrabold tracking-tight 
           text-black dark:text-white mb-4
         "
       >
@@ -29,7 +29,7 @@ export default function NotFound() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        className="text-2xl md:text-3xl font-semibold text-neutral-700 dark:text-neutral-300 mb-4"
+        className="text-2xl md:text-2xl font-semibold text-neutral-700 dark:text-neutral-300 mb-4"
       >
         Page Not Found
       </motion.h2>
@@ -42,7 +42,7 @@ export default function NotFound() {
         className="
           max-w-lg mx-auto 
           text-neutral-600 dark:text-neutral-400 
-          text-base md:text-lg leading-relaxed mb-10
+          text-base md:text-base leading-relaxed mb-8
         "
       >
         The page you’re trying to reach doesn’t exist or may have been moved.
