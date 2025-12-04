@@ -1,6 +1,4 @@
-export default function Layout({
-  children,
-}: Readonly<{
+export default function Layout( {children}: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
