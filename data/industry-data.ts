@@ -1,4 +1,4 @@
-export const industries = [
+export  const industries = [
   {
     id: "tech",
     name: "Technology",

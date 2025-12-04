@@ -1,7 +1,9 @@
+import {industries} from "../../../data/industry-data"
+import OnboardingForm from "./_components/onboarding-form"
 export default function OnBoarding(){
     return (
-        <div>
-            Onboarding
-        </div>
+        <main>
+            <OnboardingForm industries={industries}/>
+        </main>
     )
 }
