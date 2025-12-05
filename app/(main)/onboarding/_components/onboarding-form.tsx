@@ -38,7 +38,7 @@ type Industry = {
   name: string;
   subIndustries: string[];
 };
-type FormOutput = z.infer<typeof onboardingSchema>;
+
 type OnboardingInput = z.input<typeof onboardingSchema>;
 type OnboardingOutput = z.infer<typeof onboardingSchema>;
 
@@ -246,7 +246,7 @@ const {
     });
     return () => sub.unsubscribe();
 
-  }, [industries]);
+  }, [industries,watch]);
 
   const watchIndustry = watch("industry");
   const watchSubIndustry = watch("subIndustry");
@@ -286,7 +286,7 @@ const {
     return true;
   }
 
-  const onSubmit: SubmitHandler<FormOutput> = async (values) => {
+  const onSubmit: SubmitHandler<OnboardingOutput> = async (values) => {
     try {
       const formattedIndustry = `${values.industry}-${values.subIndustry
         .toLowerCase()
@@ -316,7 +316,7 @@ const {
   };
 
   const UnderlinedTitle: React.FC<{ title: string; subtitle?: string }> = ({ title, subtitle }) => (
-    <div>
+    <div className="group">
       <h2 className="text-2xl md:text-3xl font-extrabold text-black dark:text-white inline-block relative">
         {title}
         <span
@@ -327,7 +327,7 @@ const {
       {subtitle && <p className="text-sm text-muted-foreground mt-2">{subtitle}</p>}
     </div>
   );
-
+const parsed = onboardingSchema.safeParse(getValues());
   return (
     <section className="w-full flex items-center justify-center py-12 px-4 md:px-8 lg:px-16">
       <div className="w-full max-w-4xl">
@@ -431,7 +431,14 @@ const {
                   >
                     <div className="space-y-4">
                       <Label htmlFor="experience">Years of Experience</Label>
-                      <Input id="experience" type="number" min={0} max={50} placeholder="e.g., 3" {...register("experience")} />
+                   <Input 
+  id="experience"
+  type="number" 
+  min={0} 
+  max={50}
+  inputMode="numeric"
+  {...register("experience", { required: true })}
+/>
                       {errors.experience && <p className="text-sm text-rose-500">{String(errors.experience.message)}</p>}
 
                       <Label htmlFor="skills">Skills</Label>
@@ -594,6 +601,7 @@ const {
                         {errors.bio && <p className="text-sm text-rose-500">{String(errors.bio.message)}</p>}
 
                         <div className="mt-6 border-t pt-4">
+                         
                           <h4 className="text-sm font-semibold mb-2">Quick review</h4>
                           <div className="text-sm text-muted-foreground space-y-1">
                             <div>
@@ -603,10 +611,11 @@ const {
                               <strong>Specialization:</strong> {watchSubIndustry ?? "—"}
                             </div>
                             <div>
-                              <strong>Experience:</strong> {getValues().experience ?? "—"} years
+                           <strong>Experience:</strong> {parsed.success ? parsed.data.experience : "—"} years
                             </div>
                             <div>
-                              <strong>Skills:</strong> {getValues().skills ?? "—"}
+                      <strong>Skills:</strong>{" "}
+{parsed.success ? (parsed.data.skills ?? []).join(", ") : "—"}
                             </div>
                           </div>
                         </div>
@@ -614,7 +623,7 @@ const {
                     </div>
                   </motion.div>
                 </div>
-                <div className="mt-4 flex items-center justify-between gap-4">
+                <div className="mt-4 hidden md:flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <Button
                       variant="ghost"
