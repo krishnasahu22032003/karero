@@ -6,7 +6,7 @@ function useFetch<TArgs extends any[], TResult>(
 ) {
   const [data, setData] = useState<TResult | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<unknown>(null);
+  const [error, setError] = useState<unknown | null>(null); // FIXED TYPE
 
   const fn = async (...args: TArgs): Promise<void> => {
     setLoading(true);

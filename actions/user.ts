@@ -6,12 +6,10 @@ type Data = {
     industry: string,
     bio?: string,
     experience?: number,
-    skills: Array<string>
+ skills: Array<string> | undefined
 }
 
-export async function UpdateUser({ data }: {
-    data: Data
-}) {
+export async function UpdateUser(data :Data) {
 
     const { userId } = await auth()
     if (!userId) throw new Error("Unauthorized")
@@ -64,7 +62,10 @@ export async function UpdateUser({ data }: {
         }, {
             timeout: 10000
         })
-        return result.upadtedUser
+       return {
+  success: true,
+  user: result.upadtedUser
+};
     } catch (e) {
         console.error((e as Error).message)
         throw new Error("Failed to updata profile ")
