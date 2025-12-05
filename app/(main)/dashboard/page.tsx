@@ -1,10 +1,16 @@
+import { getUserOnboardingStatus } from "@/actions/user"
+import { redirect } from "next/navigation"
+const IndustryInsightPage = async () => {
 
-const Dashboard = () => {
+const isOnboarded = await getUserOnboardingStatus()
+if(!isOnboarded){
+  redirect("/onboarding")
+}
   return (
     <div>
-      
+      Onboarding Form 
     </div>
   )
 }
 
-export default Dashboard
+export default IndustryInsightPage

@@ -1,3 +1,7 @@
+'use client'
+
+import { useForm, SubmitHandler } from "react-hook-form"
+
 type Industry = {
     id:string,
     name:string,
