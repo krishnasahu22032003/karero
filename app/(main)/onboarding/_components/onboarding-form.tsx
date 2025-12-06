@@ -61,9 +61,9 @@ const TiltCard: React.FC<
     const py = (e.clientY - rect.top) / rect.height;
 
     setT({
-      rx: (py - 0.5) * -12, // stronger tilt
-      ry: (px - 0.5) * 16,
-      s: 1.035,
+      rx: (py - 0.5) * 6,
+      ry: (px - 0.5) * 6,
+      s: 1,
     });
   };
 
@@ -138,9 +138,8 @@ const AccordionStep: React.FC<
         </div>
 
         <div
-          className={`w-9 h-9 rounded-2xl flex items-center justify-center border transition ${
-            open ? "bg-linear-to-br from-gray-900 to-neutral-700 text-white" : "bg-transparent"
-          }`}
+          className={`w-9 h-9 rounded-2xl flex items-center justify-center border transition ${open ? "bg-linear-to-br from-gray-900 to-neutral-700 text-white" : "bg-transparent"
+            }`}
         >
           {open ? <Check className="w-4 h-4" /> : <span className="text-sm opacity-60">+</span>}
         </div>
@@ -165,7 +164,7 @@ const StepIndicator: React.FC<{
   onJump?: (index: number) => void;
 }> = ({ steps, current, onJump }) => {
   return (
-    <div className="hidden md:flex items-center gap-6 mb-6">
+    <div className="hidden md:flex items-center gap-6 mb-6 -mt-12">
       {steps.map((s, i) => {
         const active = i === current;
         return (
@@ -176,20 +175,18 @@ const StepIndicator: React.FC<{
             aria-current={active ? "step" : undefined}
           >
             <div
-              className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-semibold transition ${
-                active
+              className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-semibold transition ${active
                   ? "bg-black text-white dark:bg-white dark:text-black shadow-[0_8px_30px_rgba(0,0,0,0.12)]"
                   : "bg-white/50 dark:bg-transparent text-black/80 dark:text-white/80 border border-gray-200/30"
-              }`}
+                }`}
             >
               {i + 1}
             </div>
 
             <span className="mt-2 text-xs text-muted-foreground group-hover:underline">{s}</span>
             <div
-              className={`h-0.5 mt-2 w-0 group-hover:w-full transition-all duration-400 ${
-                active ? "bg-black dark:bg-white" : "bg-transparent"
-              }`}
+              className={`h-0.5 mt-2 w-0 group-hover:w-full transition-all duration-400 ${active ? "bg-black dark:bg-white" : "bg-transparent"
+                }`}
             />
           </button>
         );
@@ -201,6 +198,7 @@ const StepIndicator: React.FC<{
 export default function OnboardingWizard({ industries }: Props) {
   const router = useRouterSafe();
   const [selectedIndustry, setSelectedIndustry] = useState<Industry | null>(null);
+
 
   const steps = useMemo(
     () => ["Industry", "Experience + Skills", "Bio & Review"],
@@ -216,26 +214,26 @@ export default function OnboardingWizard({ industries }: Props) {
     data: updateResult,
   } = useFetch(UpdateUser);
 
-const {
-  register,
-  handleSubmit,
-  watch,
-  setValue,
-  trigger,
-  formState: { errors },
-  getValues,
-} = useForm<OnboardingInput, any, OnboardingOutput>({
-  resolver: zodResolver(onboardingSchema),
-  mode: "onBlur",
-  reValidateMode: "onChange",
-  defaultValues: {
-    industry: "",
-    subIndustry: "",
-    bio: "",
-    experience: "0", 
-    skills: "",       
-  },
-});
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    trigger,
+    formState: { errors },
+    getValues,
+  } = useForm<OnboardingInput, any, OnboardingOutput>({
+    resolver: zodResolver(onboardingSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      industry: "",
+      subIndustry: "",
+      bio: "",
+      experience: "0",
+      skills: "",
+    },
+  });
 
   useEffect(() => {
     const sub = watch((values) => {
@@ -246,7 +244,7 @@ const {
     });
     return () => sub.unsubscribe();
 
-  }, [industries,watch]);
+  }, [industries, watch]);
 
   const watchIndustry = watch("industry");
   const watchSubIndustry = watch("subIndustry");
@@ -292,28 +290,32 @@ const {
         .toLowerCase()
         .replace(/ /g, "-")}`;
 
-      await updateUserFn({
+      const result = await updateUserFn({
         ...values,
         industry: formattedIndustry,
       });
 
-      toast.success("Profile updated — welcome aboard!");
+      if (result?.success) {
+        toast.success("Profile updated!");
+        router.push("/dashboard");
+        router.refresh();
+        return;
+      }
+
+      toast.error("Something went wrong.");
     } catch (err) {
       console.error("Onboarding submit error", err);
-      toast.error("Something went wrong. Try again.");
+      toast.error("Something went wrong.");
     }
   };
 
-  useEffect(() => {
-    if (updateResult?.success && !updateLoading) {
-      router.push("/dashboard");
-      router.refresh();
-    }
-  }, [updateLoading, updateResult, router]);
+
+
   const toggleOpen = (index: number) => {
     setOpenIndex((cur) => (cur === index ? null : index));
     setStepIndex(index);
   };
+
 
   const UnderlinedTitle: React.FC<{ title: string; subtitle?: string }> = ({ title, subtitle }) => (
     <div className="group">
@@ -327,9 +329,9 @@ const {
       {subtitle && <p className="text-sm text-muted-foreground mt-2">{subtitle}</p>}
     </div>
   );
-const parsed = onboardingSchema.safeParse(getValues());
+  const parsed = onboardingSchema.safeParse(getValues());
   return (
-    <section className="w-full flex items-center justify-center py-12 px-4 md:px-8 lg:px-16">
+    <section className="w-full flex items-center justify-center px-4 md:px-8 lg:px-16">
       <div className="w-full max-w-4xl">
         <StepIndicator steps={steps} current={stepIndex} onJump={jumpTo} />
 
@@ -363,7 +365,7 @@ const parsed = onboardingSchema.safeParse(getValues());
               </CardHeader>
 
               <CardContent className="p-6 md:p-8">
-        
+
                 <div className="md:hidden">
                   <AccordionStep
                     title="Industry"
@@ -381,13 +383,13 @@ const parsed = onboardingSchema.safeParse(getValues());
                           setValue("subIndustry", "");
                         }}
                       >
-                        <SelectTrigger id="industry" className="rounded-2xl">
+                        <SelectTrigger id="industry" className="rounded-2xl ">
                           <SelectValue placeholder="Choose your industry" />
                         </SelectTrigger>
 
                         <SelectContent>
                           <SelectGroup>
-                            <SelectLabel>Industries</SelectLabel>
+                            <SelectLabel className="mb-2">Industries</SelectLabel>
                             {industries.map((ind) => (
                               <SelectItem key={ind.id} value={ind.id}>
                                 {ind.name}
@@ -431,14 +433,14 @@ const parsed = onboardingSchema.safeParse(getValues());
                   >
                     <div className="space-y-4">
                       <Label htmlFor="experience">Years of Experience</Label>
-                   <Input 
-  id="experience"
-  type="number" 
-  min={0} 
-  max={50}
-  inputMode="numeric"
-  {...register("experience", { required: true })}
-/>
+                      <Input
+                        id="experience"
+                        type="number"
+                        min={0}
+                        max={50}
+                        inputMode="numeric"
+                        {...register("experience", { required: true })}
+                      />
                       {errors.experience && <p className="text-sm text-rose-500">{String(errors.experience.message)}</p>}
 
                       <Label htmlFor="skills">Skills</Label>
@@ -464,7 +466,7 @@ const parsed = onboardingSchema.safeParse(getValues());
                       <div className="mt-4">
                         <Button
                           type="submit"
-                          className="w-full rounded-2xl py-3 flex items-center justify-center gap-2"
+                          className="w-full rounded-2xl py-3 flex items-center justify-center gap-2 cursor-pointer"
                           disabled={updateLoading}
                         >
                           {updateLoading ? (
@@ -481,7 +483,7 @@ const parsed = onboardingSchema.safeParse(getValues());
                   </AccordionStep>
                 </div>
 
-          
+
                 <div className="hidden md:block">
 
                   <motion.div
@@ -574,7 +576,7 @@ const parsed = onboardingSchema.safeParse(getValues());
                         <div>
                           <Label htmlFor="skills">Skills</Label>
                           <Input id="skills" placeholder="e.g., Python, Product Management" {...register("skills")} />
-                          <p className="text-xs text-muted-foreground">Comma separated. The AI parses tools, languages & strengths.</p>
+                          <p className="text-xs text-muted-foreground mt-2">Comma separated. The AI parses tools, languages & strengths.</p>
                           {errors.skills && <p className="text-sm text-rose-500">{String(errors.skills.message)}</p>}
                         </div>
                       </div>
@@ -596,12 +598,12 @@ const parsed = onboardingSchema.safeParse(getValues());
 
                       <div className="mt-4">
                         <Label htmlFor="bio">Professional Bio</Label>
-                        <Textarea id="bio" className="h-36" placeholder="One-line summary — what drives you" {...register("bio")} />
+                        <Textarea id="bio" className="h-36 mt-2" placeholder="One-line summary — what drives you" {...register("bio")} />
                         <p className="text-xs text-muted-foreground mt-2">Keep it short — the AI will expand and personalise messaging for you.</p>
                         {errors.bio && <p className="text-sm text-rose-500">{String(errors.bio.message)}</p>}
 
                         <div className="mt-6 border-t pt-4">
-                         
+
                           <h4 className="text-sm font-semibold mb-2">Quick review</h4>
                           <div className="text-sm text-muted-foreground space-y-1">
                             <div>
@@ -611,11 +613,11 @@ const parsed = onboardingSchema.safeParse(getValues());
                               <strong>Specialization:</strong> {watchSubIndustry ?? "—"}
                             </div>
                             <div>
-                           <strong>Experience:</strong> {parsed.success ? parsed.data.experience : "—"} years
+                              <strong>Experience:</strong> {parsed.success ? parsed.data.experience : "—"} years
                             </div>
                             <div>
-                      <strong>Skills:</strong>{" "}
-{parsed.success ? (parsed.data.skills ?? []).join(", ") : "—"}
+                              <strong>Skills:</strong>{" "}
+                              {parsed.success ? (parsed.data.skills ?? []).join(", ") : "—"}
                             </div>
                           </div>
                         </div>
@@ -629,7 +631,7 @@ const parsed = onboardingSchema.safeParse(getValues());
                       variant="ghost"
                       onClick={() => {
                         if (stepIndex === 0) {
-                
+
                         } else goPrev();
                       }}
                       className="rounded-full px-4 py-2"
@@ -644,14 +646,14 @@ const parsed = onboardingSchema.safeParse(getValues());
                       <Button
                         type="button"
                         onClick={goNext}
-                        className="rounded-2xl px-5 py-2"
+                        className="rounded-2xl px-5 py-2 cursor-pointer"
                       >
                         Continue
                       </Button>
                     ) : (
                       <Button
                         type="submit"
-                        className="rounded-2xl px-5 py-2 flex items-center gap-2"
+                        className="rounded-2xl px-5 py-2 flex items-center gap-2 cursor-pointer"
                         disabled={updateLoading}
                       >
                         {updateLoading ? (

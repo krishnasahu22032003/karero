@@ -6,15 +6,17 @@ function useFetch<TArgs extends any[], TResult>(
 ) {
   const [data, setData] = useState<TResult | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<unknown | null>(null); // FIXED TYPE
+  const [error, setError] = useState<unknown | null>(null);
 
-  const fn = async (...args: TArgs): Promise<void> => {
+  const fn = async (...args: TArgs): Promise<TResult | undefined> => {
     setLoading(true);
     setError(null);
 
     try {
       const response = await cb(...args);
       setData(response);
+
+      return response;
     } catch (err: unknown) {
       setError(err);
 
@@ -22,6 +24,7 @@ function useFetch<TArgs extends any[], TResult>(
         err instanceof Error ? err.message : "Something went wrong.";
 
       toast.error(message);
+      return undefined;
     } finally {
       setLoading(false);
     }
