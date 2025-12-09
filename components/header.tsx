@@ -1,4 +1,3 @@
-
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
@@ -29,20 +28,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+
 import ModeToggle from "./ui/mode-toggle";
 import { CheckUser } from "@/lib/checkUser";
 
 export default async function Header() {
-  await CheckUser()
-    const {userId} =await auth()
+  await CheckUser();
+  const { userId } = await auth();
+
   return (
-    <header className="w-full border-b border-white/10 dark:border-white/10 backdrop-blur-md sticky top-0 z-50 ]">
+    <header className="w-full border-b border-white/10 dark:border-white/10 backdrop-blur-md sticky top-0 z-50">
       <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
-
-        {/* LEFT: Logo + Nav Items */}
         <div className="flex items-center gap-6">
-
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/logo1.png"
@@ -51,50 +48,37 @@ export default async function Header() {
               height={40}
               className="h-10 w-auto object-contain"
             />
-
-            {/* Brand Name */}
             <h1 className="text-black dark:text-white font-semibold text-lg tracking-tight leading-none">
               Karero AI
             </h1>
           </Link>
 
-          {/* Desktop Navigation */}
-         {/* Desktop Navigation */}
-<SignedOut>
-  <div className="hidden md:flex items-center gap-6 ml-6 mt-1 text-[17px] font-medium">
-    <Link href="/#home" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
-    <Link href="/#testimonials" className="text-sm text-muted-foreground hover:text-foreground">Testimonials</Link>
-    <Link href="/#features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
-    <Link href="/#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
-  </div>
-</SignedOut>
-
+          <SignedOut>
+            <div className="hidden md:flex items-center gap-6 ml-6 mt-1 text-[17px] font-medium">
+              <Link href="/#home" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
+              <Link href="/#testimonials" className="text-sm text-muted-foreground hover:text-foreground">Testimonials</Link>
+              <Link href="/#features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
+              <Link href="/#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
+            </div>
+          </SignedOut>
         </div>
 
-        {/* RIGHT SIDE + MOBILE MENU */}
         <div className="flex items-center gap-4">
-
-          {/* Desktop Sign In + Sign Up */}
-          <div className="hidden md:flex items-center gap-3 ">
-          <ModeToggle/>
+          <div className="hidden md:flex items-center gap-3">
+            <ModeToggle />
             <SignedOut>
               <SignUpButton>
-                <Button variant="primary" className="rounded-full px-6 py-2">
-                  Sign Up
-                </Button>
+                <Button variant="primary" className="rounded-full px-6 py-2">Sign Up</Button>
               </SignUpButton>
             </SignedOut>
-            
+
             <SignedOut>
               <SignInButton>
-                <Button variant="primary" className="rounded-full px-6 py-2">
-                  Sign In
-                </Button>
+                <Button variant="primary" className="rounded-full px-6 py-2">Sign In</Button>
               </SignInButton>
             </SignedOut>
           </div>
 
-          {/* Desktop Right Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <SignedIn>
               <Link href="/dashboard">
@@ -103,7 +87,6 @@ export default async function Header() {
                 </Button>
               </Link>
 
-              {/* Growth Tools Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="flex items-center gap-2">
@@ -134,7 +117,6 @@ export default async function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* User Button */}
               <UserButton
                 appearance={{
                   elements: {
@@ -148,7 +130,6 @@ export default async function Header() {
             </SignedIn>
           </div>
 
-          {/* 🔥 MOBILE MENU (Hamburger) */}
           <div className="md:hidden">
             <MobileMenu />
           </div>
@@ -170,15 +151,15 @@ function MobileMenu() {
           <SheetTitle className="text-lg font-semibold">Menu</SheetTitle>
         </SheetHeader>
 
-        {/* MOBILE NAV ITEMS */}
-        <div className="mt-6 ml-4 flex flex-col gap-3   ">
+        <div className="mt-6 ml-4 flex flex-col gap-3">
+          <ModeToggle />
 
-          <ModeToggle/>
           <SignedOut>
-          <Link href="/#home" className=" text-sm text-muted-foreground hover:text-foreground">Home</Link>
-          <Link href="/#testimonials" className="text-sm text-muted-foreground hover:text-foreground">Testimonials</Link>
-          <Link href="/#features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
-          <Link href="/#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
+            <Link href="/#home" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
+            <Link href="/#testimonials" className="text-sm text-muted-foreground hover:text-foreground">Testimonials</Link>
+            <Link href="/#features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
+            <Link href="/#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
+
             <SignUpButton>
               <Button variant="primary" className="w-full mt-2">Sign Up</Button>
             </SignUpButton>
@@ -191,15 +172,22 @@ function MobileMenu() {
           <SignedIn>
             <Link href="/dashboard">
               <Button className="w-full flex items-center gap-2">
-                <LayoutDashboard className="h-4 w-4" /> Dashboard
+                <LayoutDashboard className="h-4 w-4" /> Industry Insights
               </Button>
             </Link>
 
-            <div className="flex flex-col gap-2 mt-2">
-              
-              <Link href="/resume" className="text-sm text-muted-foreground hover:text-foreground">Build Resume</Link>
-              <Link href="/ai-cover-letter" className="text-sm text-muted-foreground hover:text-foreground">Cover Letter</Link>
-              <Link href="/interview" className="text-sm text-muted-foreground hover:text-foreground">Interview Prep</Link>
+            <div className="flex flex-col gap-3 mt-4">
+              <Link href="/resume" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                <FileText className="h-4 w-4" /> Build Resume
+              </Link>
+
+              <Link href="/ai-cover-letter" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                <PenBox className="h-4 w-4" /> Cover Letter
+              </Link>
+
+              <Link href="/interview" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                <GraduationCap className="h-4 w-4" /> Interview Prep
+              </Link>
             </div>
 
             <div className="mt-4">
