@@ -7,13 +7,18 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="px-6 md:px-10 lg:px-14 pt-4 relative">
-
+    <div
+      className="
+        px-8 md:px-32 lg:px-32
+        relative
+      "
+    >
       {/* Header */}
-      <div className="group relative mb-2 -mt-16">
+      <div className="group relative mb-2 sm:mb-2 md:mb-2 md:-mt-14  -mt-14">
         <h1
           className="
-            text-5xl md:text-6xl font-extrabold tracking-tight
+            text-3xl sm:text-5xl md:text-5xl 
+            font-extrabold tracking-tight
             bg-clip-text text-transparent
             bg-gradient-to-r from-neutral-700 via-neutral-400 to-neutral-200
             dark:from-neutral-200 dark:via-neutral-100 dark:to-white
@@ -24,9 +29,11 @@ export default function Layout({
           Industry Insights
         </h1>
 
+        {/* Underline Animation */}
         <div
           className="
-            h-[3px] w-0 group-hover:w-full mt-3
+            h-[3px] w-0 group-hover:w-full
+            mt-2 sm:mt-3
             bg-gradient-to-r from-neutral-400 via-neutral-200 to-white
             dark:from-neutral-500 dark:via-neutral-300 dark:to-white
             transition-all duration-700 rounded-full
@@ -34,9 +41,10 @@ export default function Layout({
         />
       </div>
 
+      {/* Suspense Loader */}
       <Suspense
         fallback={
-          <div className="w-full py-12">
+          <div className="w-full py-10">
             <BarLoader
               width={'100%'}
               height={6}

@@ -3,7 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "../lib/prisma";
 import { GoogleGenAI } from "@google/genai";
-import { DemandLevel, MarketOutLook } from "@prisma/client";
+import { DemandLevel as PrismaDemand, MarketOutLook as PrismaOutlook } from "@prisma/client";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
@@ -19,19 +19,17 @@ function normalizeInsights(ai: any) {
 
     demandLevel:
       demand === "HIGH"
-        ? DemandLevel.HIGH
+        ? PrismaDemand.HIGH
         : demand === "MEDIUM"
-        ? DemandLevel.MEDIUM
-        : demand === "LOW"
-        ? DemandLevel.LOW
-        : DemandLevel.MEDIUM,
+        ? PrismaDemand.MEDIUM
+        : PrismaDemand.LOW,
 
     marketOutlook:
       outlook === "POSITIVE"
-        ? MarketOutLook.POSITIVE
+        ? PrismaOutlook.POSITIVE
         : outlook === "NEGATIVE"
-        ? MarketOutLook.NEGATIVE
-        : MarketOutLook.NEUTRAL,
+        ? PrismaOutlook.NEGATIVE
+        : PrismaOutlook.NEUTRAL,
 
     topSkills: ai.topSkills ?? [],
     keyTrends: ai.keyTrends ?? [],
@@ -43,10 +41,10 @@ export const generateAIInsights = async (industry: string | null) => {
   if (!industry) throw new Error("Industry is required");
 
   const prompt = `
-    Analyze the current state of the ${industry} industry and provide insights ONLY in this JSON structure:
+    Analyze the ${industry} industry and return JSON ONLY:
     {
       "salaryRanges": [
-        { "role": "string", "min": number, "max": number, "median": number, "location": "string" }
+        { "role": "string", "min": number, "max": number, "median": number }
       ],
       "growthRate": number,
       "DemandLevel": "High" | "Medium" | "Low",
@@ -55,11 +53,6 @@ export const generateAIInsights = async (industry: string | null) => {
       "keyTrends": ["trend1", "trend2"],
       "recommendedSkills": ["skill1", "skill2"]
     }
-
-    RULES:
-    - Output MUST be valid JSON ONLY.
-    - No markdown or explanations.
-    - At least 5 roles, 5 skills, 5 trends.
   `;
 
   const result = await ai.models.generateContent({
@@ -68,14 +61,9 @@ export const generateAIInsights = async (industry: string | null) => {
   });
 
   const raw = result.text ?? "";
-  const cleaned = raw
-    .replace(/```json/gi, "")
-    .replace(/```/g, "")
-    .trim();
+  const cleaned = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
 
-  const parsed = JSON.parse(cleaned);
-
-  return normalizeInsights(parsed); 
+  return normalizeInsights(JSON.parse(cleaned));
 };
 
 export async function Dashboard() {
@@ -90,24 +78,73 @@ export async function Dashboard() {
   if (!user) throw new Error("User does not exist");
 
   if (!user.industryInsight) {
-    const insights = await generateAIInsights(user.industry);
+    const aiInsights = await generateAIInsights(user.industry);
 
     const saved = await prisma.industryInsight.create({
       data: {
         industry: user.industry!,
-        salaryRanges: insights.salaryRanges,
-        growthRate: insights.growthRate,
-        demandLevel: insights.demandLevel,
-        topSkills: insights.topSkills,
-    marketOutlook: insights.marketOutlook,
-        keyTrends: insights.keyTrends,
-        recommendedSkills: insights.recommendedSkills,
-        nextUpdate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        salaryRanges: aiInsights.salaryRanges,
+        growthRate: aiInsights.growthRate,
+        demandLevel: aiInsights.demandLevel,
+        topSkills: aiInsights.topSkills,
+        marketOutlook: aiInsights.marketOutlook,
+        keyTrends: aiInsights.keyTrends,
+        recommendedSkills: aiInsights.recommendedSkills,
+        lastUpdated: new Date(),
+        nextUpdate: new Date(Date.now() + 7 * 86400000),
       },
     });
 
-    return saved;
+    return {
+      id: saved.id,
+      industry: saved.industry,
+      demandLevel: saved.demandLevel.toLowerCase() as "low" | "medium" | "high",
+      marketOutlook: saved.marketOutlook.toLowerCase() as
+        | "positive"
+        | "neutral"
+        | "negative",
+
+      growthRate: saved.growthRate,
+      topSkills: saved.topSkills,
+      keyTrends: saved.keyTrends,
+      recommendedSkills: saved.recommendedSkills,
+      salaryRanges: (saved.salaryRanges as any[]).map((r) => ({
+        role: r.role,
+        min: Number(r.min),
+        max: Number(r.max),
+        median: Number(r.median),
+      })),
+
+      lastUpdated: saved.lastUpdated.toString(),
+      nextUpdate: saved.nextUpdate.toString(),
+    };
   }
 
-  return user.industryInsight;
+  const saved = user.industryInsight;
+
+  return {
+    id: saved.id,
+    industry: saved.industry,
+    
+    demandLevel: saved.demandLevel.toLowerCase() as "low" | "medium" | "high",
+    marketOutlook: saved.marketOutlook.toLowerCase() as
+      | "positive"
+      | "neutral"
+      | "negative",
+
+    growthRate: saved.growthRate,
+    topSkills: saved.topSkills,
+    keyTrends: saved.keyTrends,
+    recommendedSkills: saved.recommendedSkills,
+
+    salaryRanges: (saved.salaryRanges as any[]).map((r) => ({
+      role: r.role,
+      min: Number(r.min),
+      max: Number(r.max),
+      median: Number(r.median),
+    })),
+
+    lastUpdated: saved.lastUpdated.toString(),
+    nextUpdate: saved.nextUpdate.toString(),
+  };
 }

@@ -36,7 +36,7 @@ export default async function Header() {
   await CheckUser()
     const {userId} =await auth()
   return (
-    <header className="w-full border-b border-white/10 dark:border-white/10 backdrop-blur-md sticky top-0 z-50">
+    <header className="w-full border-b border-white/10 dark:border-white/10 backdrop-blur-md sticky top-0 z-50 ]">
       <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
 
         {/* LEFT: Logo + Nav Items */}
@@ -173,12 +173,12 @@ function MobileMenu() {
         {/* MOBILE NAV ITEMS */}
         <div className="mt-6 ml-4 flex flex-col gap-3   ">
 
+          <ModeToggle/>
+          <SignedOut>
           <Link href="/#home" className=" text-sm text-muted-foreground hover:text-foreground">Home</Link>
           <Link href="/#testimonials" className="text-sm text-muted-foreground hover:text-foreground">Testimonials</Link>
           <Link href="/#features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link>
           <Link href="/#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
-          <ModeToggle/>
-          <SignedOut>
             <SignUpButton>
               <Button variant="primary" className="w-full mt-2">Sign Up</Button>
             </SignUpButton>
@@ -196,6 +196,7 @@ function MobileMenu() {
             </Link>
 
             <div className="flex flex-col gap-2 mt-2">
+              
               <Link href="/resume" className="text-sm text-muted-foreground hover:text-foreground">Build Resume</Link>
               <Link href="/ai-cover-letter" className="text-sm text-muted-foreground hover:text-foreground">Cover Letter</Link>
               <Link href="/interview" className="text-sm text-muted-foreground hover:text-foreground">Interview Prep</Link>
