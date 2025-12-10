@@ -298,7 +298,6 @@ export default function OnboardingWizard({ industries }: Props) {
       if (result?.success) {
         toast.success("Profile updated!");
         router.push("/dashboard");
-        router.refresh();
         return;
       }
 

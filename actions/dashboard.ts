@@ -2,11 +2,11 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "../lib/prisma";
-import { GoogleGenAI } from "@google/genai";
+import OpenAi from "openai"
 import { DemandLevel as PrismaDemand, MarketOutLook as PrismaOutlook } from "@prisma/client";
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY!,
+const ai = new OpenAi({
+  apiKey: process.env.OPENAI_API_KEY!,
 });
 
 function normalizeInsights(ai: any) {
@@ -55,12 +55,12 @@ export const generateAIInsights = async (industry: string | null) => {
     }
   `;
 
-  const result = await ai.models.generateContent({
-    model: "gemini-2.0-flash",
-    contents: prompt,
+  const result = await ai.responses.create({
+    model:"gpt-4.1-mini",
+    input: prompt,
   });
 
-  const raw = result.text ?? "";
+  const raw = result.output_text ?? "" ;
   const cleaned = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
 
   return normalizeInsights(JSON.parse(cleaned));

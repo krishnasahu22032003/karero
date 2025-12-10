@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { inngest } from "./client";
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
 import { DemandLevel as PrismaDemand, MarketOutLook as PrismaOutlook } from "@prisma/client";
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY!,
+const ai = new OpenAI({
+  apiKey: process.env.OPEN_API_KEY!,
 });
 
 function normalizeAI(ai: any) {
@@ -67,12 +67,12 @@ export const generateIndustryInsights = inngest.createFunction(
       `;
 
 const result = await step.run("AI Generate Insights", async () => {
-  const res = await ai.models.generateContent({
-    model: "gemini-2.0-flash",
-    contents: prompt,
+  const res = await ai.responses.create({
+     model:"gpt-4.1-mini",
+    input: prompt,
   });
 
-  const text = res.text || "";
+  const text = res.output_text || "";
   const cleaned = text.replace(/```[\s\S]*?```/g, "").trim();
 
   return JSON.parse(cleaned);
