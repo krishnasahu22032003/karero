@@ -22,11 +22,8 @@ export default function Quiz() {
   const [answers, setAnswers] = useState<(string | null)[]>([]);
   const [showExplanation, setShowExplanation] = useState(false);
 
-  const {
-    loading: generatingQuiz,
-    fn: generateQuizFn,
-    data: quizData,
-  } = useFetch(generateQuiz);
+  const { loading: generatingQuiz, fn: generateQuizFn, data: quizData } =
+    useFetch(generateQuiz);
 
   const {
     loading: savingResult,
@@ -42,14 +39,15 @@ export default function Quiz() {
   }, [quizData]);
 
   const handleAnswer = (answer: string) => {
-    const newAnswers = [...answers];
-    newAnswers[currentQuestion] = answer;
-    setAnswers(newAnswers);
+    const updated = [...answers];
+    updated[currentQuestion] = answer;
+    setAnswers(updated);
+    setShowExplanation(false);
   };
 
   const handleNext = () => {
     if (currentQuestion < quizData.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+      setCurrentQuestion((q) => q + 1);
       setShowExplanation(false);
     } else {
       finishQuiz();
@@ -58,22 +56,23 @@ export default function Quiz() {
 
   const calculateScore = () => {
     let correct = 0;
-    answers.forEach((answer, index) => {
-      if (answer === quizData[index].correctAnswer) {
-        correct++;
-      }
+    answers.forEach((a, i) => {
+      if (a === quizData[i].correctAnswer) correct++;
     });
     return (correct / quizData.length) * 100;
   };
 
   const finishQuiz = async () => {
-    const score = calculateScore();
     try {
-      const cleanedAnswers = answers.map((a) => a ?? "");
-      await saveQuizResultFn(quizData, cleanedAnswers, score);
+      const score = calculateScore();
+      await saveQuizResultFn(
+        quizData,
+        answers.map((a) => a ?? ""),
+        score
+      );
       toast.success("Quiz completed!");
-    } catch (error) {
-      toast.error((error as Error).message || "Failed to save quiz results");
+    } catch (e) {
+      toast.error("Failed to save quiz results");
     }
   };
 
@@ -87,13 +86,12 @@ export default function Quiz() {
 
   if (generatingQuiz) {
     return (
-      <div className="px-6 py-6">
-        <BarLoader className="mt-4" width={"100%"} color="gray" />
+      <div className="px-6">
+        <BarLoader width="100%" color="#888" />
       </div>
     );
   }
 
-  // Quiz Completed → Show Result
   if (resultData) {
     const safeResult: QuizResultType = {
       quizScore: resultData.quizScore,
@@ -102,31 +100,28 @@ export default function Quiz() {
     };
 
     return (
-      <div className="mx-2 md:mx-auto max-w-3xl">
+      <div className="max-w-3xl mx-auto">
         <QuizResult result={safeResult} onStartNew={startNewQuiz} />
       </div>
     );
   }
 
-  // Start Page
   if (!quizData) {
     return (
-      <Card className="mx-2 md:mx-auto max-w-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 shadow-md hover:shadow-xl transition-all duration-300">
+      <Card className="max-w-2xl mx-auto bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 transition-all hover:shadow-lg">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold tracking-tight">
+          <CardTitle className="tracking-tight">
             Ready to test your knowledge?
           </CardTitle>
         </CardHeader>
-
         <CardContent>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            This quiz contains 10 questions tailored to your skills and
-            expertise. Select the best answer to each question.
+            This quiz contains 10 industry-specific questions. Choose the best
+            answer for each question.
           </p>
         </CardContent>
-
         <CardFooter>
-          <Button onClick={generateQuizFn} className="w-full h-11 cursor-pointer">
+          <Button onClick={generateQuizFn} className="w-full h-11">
             Start Quiz
           </Button>
         </CardFooter>
@@ -137,41 +132,49 @@ export default function Quiz() {
   const question = quizData[currentQuestion];
 
   return (
-    <Card className="mx-2 md:mx-auto max-w-3xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 shadow-md hover:shadow-xl transition-all duration-300">
+    <Card className="max-w-3xl mx-auto bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 transition-all hover:shadow-lg">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold tracking-tight">
+        <CardTitle className="tracking-tight">
           Question {currentQuestion + 1} of {quizData.length}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-5">
+      <CardContent className="space-y-6">
         <p className="text-base md:text-lg font-medium leading-snug">
           {question.question}
         </p>
 
-        {/* Options */}
         <RadioGroup
-          onValueChange={handleAnswer}
           value={answers[currentQuestion] || ""}
+          onValueChange={handleAnswer}
           className="space-y-3"
         >
-          {question.options.map((option: string, index: number) => (
-            <div
-              key={index}
-              className="flex items-center space-x-3 p-3 rounded-md border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-all cursor-pointer"
-            >
-              <RadioGroupItem value={option} id={`option-${index}`} />
-              <Label htmlFor={`option-${index}`} className="text-sm md:text-base">
-                {option}
-              </Label>
-            </div>
-          ))}
+          {question.options.map((option: string, idx: number) => {
+            const selected = answers[currentQuestion] === option;
+            return (
+              <label
+                key={idx}
+                htmlFor={`opt-${idx}`}
+                className={`
+                  flex items-center gap-3 rounded-lg p-4 cursor-pointer
+                  border transition-all
+                  ${
+                    selected
+                      ? "border-neutral-400 dark:border-white/30 bg-neutral-100 dark:bg-neutral-800"
+                      : "border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  }
+                `}
+              >
+                <RadioGroupItem value={option} id={`opt-${idx}`} />
+                <span className="text-sm md:text-base">{option}</span>
+              </label>
+            );
+          })}
         </RadioGroup>
 
-        {/* Explanation */}
         {showExplanation && (
-          <div className="p-4 rounded-lg bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-white/10 transition-all">
-            <p className="font-medium text-sm mb-1">Explanation:</p>
+          <div className="rounded-xl p-4 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-white/10">
+            <p className="text-sm font-medium mb-1">Explanation</p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {question.explanation}
             </p>
@@ -179,13 +182,14 @@ export default function Quiz() {
         )}
       </CardContent>
 
-      <CardFooter className="flex justify-between gap-3">
+     <CardFooter className="flex flex-col-reverse sm:flex-row gap-3">
+
         {!showExplanation && (
           <Button
             variant="outline"
-            onClick={() => setShowExplanation(true)}
             disabled={!answers[currentQuestion]}
-            className="h-10 px-4 border-neutral-300 dark:border-white/20"
+            onClick={() => setShowExplanation(true)}
+            className="border-neutral-300 dark:border-white/20 cursor-pointer"
           >
             Show Explanation
           </Button>
@@ -194,15 +198,11 @@ export default function Quiz() {
         <Button
           onClick={handleNext}
           disabled={!answers[currentQuestion] || savingResult}
-          className="ml-auto h-10 px-6"
+         className="w-full sm:w-auto sm:ml-auto cursor-pointer" 
         >
-          {savingResult ? (
-            <BarLoader width={"100%"} color="gray" />
-          ) : currentQuestion < quizData.length - 1 ? (
-            "Next Question"
-          ) : (
-            "Finish Quiz"
-          )}
+          {currentQuestion < quizData.length - 1
+            ? "Next Question"
+            : "Finish Quiz"}
         </Button>
       </CardFooter>
     </Card>
