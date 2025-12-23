@@ -45,7 +45,7 @@ export default function QuizResult({
           </span>
 
           {/* gradient title */}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-rose-500">
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-500 via-fuchsia-500 to-rose-500">
             Quiz Results
           </span>
         </h1>

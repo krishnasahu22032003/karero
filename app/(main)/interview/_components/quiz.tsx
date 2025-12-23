@@ -126,7 +126,7 @@ export default function Quiz() {
         </CardContent>
 
         <CardFooter>
-          <Button onClick={generateQuizFn} className="w-full h-11">
+          <Button onClick={generateQuizFn} className="w-full h-11 cursor-pointer">
             Start Quiz
           </Button>
         </CardFooter>

@@ -42,7 +42,7 @@ export default function FAQSection() {
   return (
     <section
       id="faq"
-      className="relative w-full py-20 md:py-28 px-6 md:px-16 lg:px-24 mx-auto"
+      className="relative  w-full py-20 md:py-28 px-6 md:px-16 lg:px-24 mx-auto"
     >
       <div
         className="

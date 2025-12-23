@@ -21,8 +21,8 @@ export default function Layout({
               height={6}
               color="#888"
               className="
-                dark:!bg-neutral-800
-                !bg-neutral-300
+                dark:bg-neutral-800!
+             bg-neutral-300!
                 rounded-full
               "
             />
