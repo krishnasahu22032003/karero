@@ -161,3 +161,30 @@ Requirements:
     }
 
 }
+
+export async function getAssessments() {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const user = await prisma.user.findUnique({
+    where: { clerkUserId: userId },
+  });
+
+  if (!user) throw new Error("User not found");
+
+  try {
+    const assessments = await prisma.assessment.findMany({
+      where: {
+        userId: user.id,
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+
+    return assessments;
+  } catch (error) {
+    console.error("Error fetching assessments:", error);
+    throw new Error("Failed to fetch assessments");
+  }
+}

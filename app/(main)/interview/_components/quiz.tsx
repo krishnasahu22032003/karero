@@ -195,15 +195,23 @@ export default function Quiz() {
           </Button>
         )}
 
-        <Button
-          onClick={handleNext}
-          disabled={!answers[currentQuestion] || savingResult}
-         className="w-full sm:w-auto sm:ml-auto cursor-pointer" 
-        >
-          {currentQuestion < quizData.length - 1
-            ? "Next Question"
-            : "Finish Quiz"}
-        </Button>
+    <Button
+  onClick={handleNext}
+  disabled={!answers[currentQuestion] || savingResult}
+  className="w-full sm:w-auto sm:ml-auto cursor-pointer"
+>
+  {savingResult && currentQuestion === quizData.length - 1 ? (
+    <span className="flex items-center gap-2">
+      <BarLoader width={60} height={4} color="#888" />
+      <span className="sr-only">Submitting</span>
+    </span>
+  ) : currentQuestion < quizData.length - 1 ? (
+    "Next Question"
+  ) : (
+    "Finish Quiz"
+  )}
+</Button>
+
       </CardFooter>
     </Card>
   );
