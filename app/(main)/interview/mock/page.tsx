@@ -11,7 +11,7 @@ export default function MockInterviewPage() {
           <Link href="/interview">
             <Button
               variant="link"
-              className="gap-2 px-0 text-sm text-muted-foreground hover:text-foreground transition"
+              className="gap-2 px-0 text-sm text-muted-foreground hover:text-foreground transition cursor-pointer"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Interview Preparation

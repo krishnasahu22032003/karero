@@ -8,6 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Area,
 } from "recharts";
 import {
   Card,
@@ -20,17 +21,18 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 
 type Assessment = {
-  quizScore: number;
+  quizScore?: number | string; // ← optional on purpose
   createdAt: string;
 };
 
 type ChartPoint = {
   date: string;
   score: number;
+  scoreArea: number;
 };
 
 type PerformanceChartProps = {
-  assessments: Assessment[] | null | undefined;
+  assessments?: Assessment[] | null;
 };
 
 export default function PerformanceChart({
@@ -39,26 +41,39 @@ export default function PerformanceChart({
   const [chartData, setChartData] = useState<ChartPoint[]>([]);
 
   useEffect(() => {
-    if (!assessments?.length) {
+       console.log("🟢 PerformanceChart props:", assessments);
+    if (!assessments || assessments.length === 0) {
+
       setChartData([]);
       return;
     }
 
-    const formatted = assessments
-      .slice()
-      .reverse()
-      .map((assessment) => ({
-        date: format(new Date(assessment.createdAt), "MMM dd"),
-        score: assessment.quizScore,
-      }));
+    const formatted: ChartPoint[] = assessments
+      .filter(a => a.quizScore != null) // 🔑 remove broken entries
+      .sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() -
+          new Date(b.createdAt).getTime()
+      )
+      .map((a) => {
+        const score = Number(a.quizScore);
+
+        return {
+          date: format(new Date(a.createdAt), "MMM dd"),
+          score: Number.isFinite(score) ? score : 0,
+          scoreArea: Number.isFinite(score) ? score : 0,
+        };
+      });
 
     setChartData(formatted);
   }, [assessments]);
 
+  const isSinglePoint = chartData.length === 1;
+
   return (
-    <Card className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 transition-all hover:shadow-lg">
+    <Card className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 hover:shadow-xl transition-all">
       <CardHeader>
-        <CardTitle className="gradient-title text-2xl md:text-3xl">
+        <CardTitle className="font-semibold tracking-tight">
           Performance Trend
         </CardTitle>
         <CardDescription>
@@ -67,62 +82,63 @@ export default function PerformanceChart({
       </CardHeader>
 
       <CardContent>
-        <div className="h-[260px] sm:h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="hsl(var(--border))"
-                opacity={0.4}
-              />
+        <div className="h-[260px] sm:h-[320px]">
+          {chartData.length ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData}>
+                <defs>
+                  <linearGradient id="scoreFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#a3a3a3" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#a3a3a3" stopOpacity={0.06} />
+                  </linearGradient>
+                </defs>
 
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-              />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#d4d4d4"
+                  className="dark:stroke-neutral-700"
+                />
 
-              <YAxis
-                domain={[0, 100]}
-                tick={{ fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-              />
+                <XAxis dataKey="date" tickLine={false} axisLine={false} />
+                <YAxis domain={[0, 100]} tickLine={false} axisLine={false} />
 
-              <Tooltip
-                cursor={{ strokeDasharray: "3 3" }}
-                content={({ active, payload }) => {
-                  if (active && payload?.length) {
+                <Tooltip
+                  content={({ active, payload }) => {
+                    if (!active || !payload?.length) return null;
+                    const point = payload[0].payload as ChartPoint;
+
                     return (
-                      <div className="rounded-lg border border-neutral-200 dark:border-white/10 bg-white dark:bg-neutral-900 px-3 py-2 shadow-md">
-                        <p className="text-sm font-medium">
-                          {payload[0].value}%
-                        </p>
+                      <div className="rounded-md bg-neutral-200 dark:bg-neutral-800 border px-3 py-2 text-sm shadow-md">
+                        <p className="font-medium">{point.score}%</p>
                         <p className="text-xs text-muted-foreground">
-                          {payload[0].payload.date}
+                          {point.date}
                         </p>
                       </div>
                     );
-                  }
-                  return null;
-                }}
-              />
+                  }}
+                />
 
-              <Line
-                type="monotone"
-                dataKey="score"
-                stroke="hsl(var(--primary))"
-                strokeWidth={2.5}
-                dot={{
-                  r: 3,
-                  strokeWidth: 2,
-                  fill: "hsl(var(--background))",
-                }}
-                activeDot={{ r: 5 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+                <Area
+                  dataKey="scoreArea"
+                  fill="url(#scoreFill)"
+                  stroke="none"
+                />
+
+                <Line
+                  dataKey="score"
+                  stroke="#404040"
+                  strokeWidth={3}
+                  dot={{ r: isSinglePoint ? 6 : 4 }}
+                  activeDot={{ r: 7 }}
+                  className="dark:stroke-neutral-300"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
+              No performance data yet
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
