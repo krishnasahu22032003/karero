@@ -19,10 +19,10 @@ export default function MockInterviewPage() {
           </Link>
 
           {/* ✅ FULL-WIDTH HEADER (Industry Insights pattern) */}
-          <div className="group relative w-full">
+          <div className="group relative w-full md:-mt-14 mt-14">
             <h1
               className="
-                text-4xl md:text-5xl lg:text-6xl
+                text-3xl md:text-5xl lg:text-5xl
                 font-extrabold tracking-tight leading-tight
                 bg-clip-text text-transparent
                 bg-linear-to-r from-neutral-700 via-neutral-500 to-neutral-300

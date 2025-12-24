@@ -14,8 +14,10 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
   DialogHeader,
 } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import QuizResult from "./quiz-result";
 import type { QuestionResult } from "./quiz-result";
 
@@ -116,20 +118,25 @@ export default function QuizList({ assessments }: QuizListProps) {
         open={!!selectedQuiz}
         onOpenChange={() => setSelectedQuiz(null)}
       >
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-          <DialogHeader />
-        {selectedQuiz && (
-  <QuizResult
-    result={{
-      quizScore: selectedQuiz.quizScore,
-      improvementTip: selectedQuiz.improvementTip ?? null,
-      questions: selectedQuiz.questions,
-    }}
-    hideStartNew
-    onStartNew={() => router.push("/interview/mock")}
-  />
-)}
+        <DialogContent className="max-w-4xl! w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader>
+            {/* Required for accessibility (screen readers) */}
+            <VisuallyHidden>
+              <DialogTitle>Quiz Results</DialogTitle>
+            </VisuallyHidden>
+          </DialogHeader>
 
+          {selectedQuiz && (
+            <QuizResult
+              result={{
+                quizScore: selectedQuiz.quizScore,
+                improvementTip: selectedQuiz.improvementTip ?? null,
+                questions: selectedQuiz.questions,
+              }}
+              hideStartNew
+              onStartNew={() => router.push("/interview/mock")}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>

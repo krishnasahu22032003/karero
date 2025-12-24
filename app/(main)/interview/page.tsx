@@ -32,11 +32,11 @@ export default async function InterviewPrepPage() {
   return (
     <div>
       {/* Header (UNCHANGED SIZE) */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-4 -mt-14 md:-mt-14">
         <div className="group relative w-full">
           <h1
             className="
-              text-4xl md:text-5xl lg:text-6xl
+              text-3xl md:text-5xl lg:text-5xl
               font-extrabold tracking-tight leading-tight
               bg-clip-text text-transparent
               bg-linear-to-r from-neutral-700 via-neutral-500 to-neutral-400
