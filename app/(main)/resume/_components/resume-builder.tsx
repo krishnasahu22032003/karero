@@ -1,21 +1,25 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import jsPDF from "jspdf";
+import { useState, useEffect, useRef } from "react";
+import {
+  useForm,
+  Controller,
+  Control,
+  FieldPathByValue,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  AlertTriangle,
   Download,
-  Edit,
   Loader2,
-  Monitor,
   Save,
   Mail,
   Phone,
   Linkedin,
   Twitter,
+  Pencil,
+  X,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import MDEditor from "@uiw/react-md-editor";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,92 +35,73 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  CardDescription,
 } from "@/components/ui/card";
 import { saveResume } from "@/actions/resume";
 import { EntryForm } from "./entry-form";
 import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@clerk/nextjs";
 import { entriesToMarkdown } from "@/app/lib/helper";
-import { resumeSchema } from "@/app/lib/schema";
-import html2pdf from "html2pdf.js/dist/html2pdf.min.js";
+import { z } from "zod";
+import type { ResumeFormValues } from "../../../../types/resume-form.types";
 
-type ResumeBuilderProps = {
-  initialContent?: string;
-};
+export const resumeSchema = z.object({
+  contactInfo: z.object({
+    email: z.string().email(),
+    mobile: z.string().optional(),
+    linkedin: z.string().optional(),
+    twitter: z.string().optional(),
+  }),
+  summary: z.string(),
+  skills: z.string(),
+  experience: z.array(z.any()),
+  education: z.array(z.any()),
+  projects: z.array(z.any()),
+});
 
-export default function ResumeBuilder({
-  initialContent,
-}: ResumeBuilderProps) {
+export default function ResumeBuilder({ initialContent }: { initialContent?: string }) {
   const { user } = useUser();
-  const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
-  const [resumeMode, setResumeMode] = useState<"edit" | "preview">("preview");
-  const [previewContent, setPreviewContent] = useState(initialContent ?? "");
+
+  const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState<"edit" | "preview">("preview");
+  const [isEditing, setIsEditing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const {
-    control,
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(resumeSchema),
-    defaultValues: {
-      contactInfo: {},
-      summary: "",
-      skills: "",
-      experience: [],
-      education: [],
-      projects: [],
-    },
-  });
+  const lastSavedContent = useRef(initialContent ?? "");
+  const [previewContent, setPreviewContent] = useState(initialContent ?? "");
 
-  const { loading: isSaving, fn: saveResumeFn, data, error } =
-    useFetch(saveResume);
+  useEffect(() => setMounted(true), []);
 
+  const { control, register, handleSubmit, watch } =
+    useForm<ResumeFormValues>({
+      resolver: zodResolver(resumeSchema),
+      defaultValues: {
+        contactInfo: {},
+        summary: "",
+        skills: "",
+        experience: [],
+        education: [],
+        projects: [],
+      },
+    });
+
+  const { loading: isSaving, fn: saveResumeFn } = useFetch(saveResume);
   const formValues = watch();
 
-  useEffect(() => {
-    if (initialContent) setActiveTab("preview");
-  }, [initialContent]);
-
-  useEffect(() => {
-    if (activeTab === "edit") {
-      setPreviewContent(getCombinedContent() || initialContent || "");
-    }
-  }, [formValues, activeTab]);
-
-  useEffect(() => {
-    if (data && !isSaving) toast.success("Resume saved successfully");
-    if (error) toast.error(error.message || "Failed to save resume");
-  }, [data, error, isSaving]);
-
-  const getContactMarkdown = () => {
-    const { contactInfo } = formValues;
+  function getContactMarkdown() {
     const parts: string[] = [];
+    const c = formValues.contactInfo;
 
-    if (contactInfo?.email) parts.push(`Email: ${contactInfo.email}`);
-    if (contactInfo?.mobile) parts.push(`Phone: ${contactInfo.mobile}`);
-    if (contactInfo?.linkedin)
-      parts.push(`[LinkedIn](${contactInfo.linkedin})`);
-    if (contactInfo?.twitter)
-      parts.push(`[Twitter](${contactInfo.twitter})`);
+    if (c?.email) parts.push(`Email: ${c.email}`);
+    if (c?.mobile) parts.push(`Phone: ${c.mobile}`);
+    if (c?.linkedin) parts.push(`[LinkedIn](${c.linkedin})`);
+    if (c?.twitter) parts.push(`[Twitter](${c.twitter})`);
 
     if (!parts.length) return "";
 
-    return `
-## <div align="center">${user?.fullName ?? ""}</div>
+    return `# ${user?.fullName ?? ""}\n${parts.join(" · ")}`;
+  }
 
-<div align="center">
-
-${parts.join(" · ")}
-
-</div>
-`;
-  };
-
-  const getCombinedContent = () => {
+  function getCombinedContent() {
     const { summary, skills, experience, education, projects } = formValues;
 
     return [
@@ -129,243 +114,247 @@ ${parts.join(" · ")}
     ]
       .filter(Boolean)
       .join("\n\n");
-  };
+  }
+
+  useEffect(() => {
+    if (isEditing) {
+      setPreviewContent(getCombinedContent());
+    }
+  }, [formValues, isEditing]);
+
+  if (!mounted) return null;
 
   const onSubmit = async () => {
-    await saveResumeFn(previewContent.trim());
+    toast.loading("Saving resume...", { id: "save" });
+    try {
+      await saveResumeFn(previewContent.trim());
+      lastSavedContent.current = previewContent;
+      setIsEditing(false);
+      setActiveTab("preview");
+      toast.success("Resume saved successfully", { id: "save" });
+    } catch {
+      toast.error("Failed to save resume", { id: "save" });
+    }
+  };
+
+  const cancelEdit = () => {
+    setPreviewContent(lastSavedContent.current);
+    setIsEditing(false);
+    setActiveTab("preview");
   };
 
   const generatePDF = async () => {
+    if (isGenerating) return;
+
+    toast.loading("Generating PDF...", { id: "pdf" });
     setIsGenerating(true);
+
     try {
-      const element = document.getElementById("resume-pdf");
-      await html2pdf()
-        .set({
-          margin: 15,
-          filename: "resume.pdf",
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .from(element!)
-        .save();
+      const doc = new jsPDF("p", "mm", "a4");
+
+      const marginX = 20;
+      const marginY = 20;
+      const lineHeight = 7;
+      const maxWidth = 170;
+      let cursorY = marginY;
+
+      const lines = previewContent.split("\n");
+
+      doc.setFont("Times", "Normal");
+      doc.setFontSize(11);
+
+      for (const line of lines) {
+        if (cursorY > 280) {
+          doc.addPage();
+          cursorY = marginY;
+        }
+
+        if (line.startsWith("# ")) {
+          doc.setFontSize(18);
+          doc.setFont("Times", "Bold");
+          doc.text(line.replace("# ", ""), marginX, cursorY);
+          cursorY += lineHeight + 4;
+          doc.setFontSize(11);
+          doc.setFont("Times", "Normal");
+        } else if (line.startsWith("## ")) {
+          doc.setFontSize(14);
+          doc.setFont("Times", "Bold");
+          doc.text(line.replace("## ", ""), marginX, cursorY);
+          cursorY += lineHeight + 2;
+          doc.setFontSize(11);
+          doc.setFont("Times", "Normal");
+        } else if (line.trim() === "") {
+          cursorY += lineHeight / 2;
+        } else {
+          const wrapped = doc.splitTextToSize(line, maxWidth);
+          doc.text(wrapped, marginX, cursorY);
+          cursorY += wrapped.length * lineHeight;
+        }
+      }
+
+      doc.save("resume.pdf");
+      toast.success("PDF exported successfully", { id: "pdf" });
+    } catch {
+      toast.error("Failed to export PDF", { id: "pdf" });
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between gap-4">
-        <h1 className="gradient-title text-4xl md:text-5xl font-bold">
-          Resume Builder
-        </h1>
+    <>
+      <Toaster richColors position="top-right" />
 
-        <div className="flex gap-2">
-          <Button
-            onClick={handleSubmit(onSubmit)}
-            disabled={isSaving}
-          >
-            {isSaving ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Saving
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4" />
-                Save
-              </>
-            )}
-          </Button>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-4xl font-bold">Resume Builder</h1>
 
-          <Button
-            variant="secondary"
-            onClick={generatePDF}
-            disabled={isGenerating}
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Generating
-              </>
-            ) : (
-              <>
-                <Download className="h-4 w-4" />
-                Export PDF
-              </>
-            )}
-          </Button>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-neutral-200 dark:bg-neutral-800">
-          <TabsTrigger value="edit">Form</TabsTrigger>
-          <TabsTrigger value="preview">Preview</TabsTrigger>
-        </TabsList>
-
-        {/* FORM */}
-        <TabsContent value="edit">
-          <form className="space-y-8">
-            <Section title="Contact Information">
-              <Grid>
-                <InputField
-                  icon={Mail}
-                  label="Email"
-                  {...register("contactInfo.email")}
-                />
-                <InputField
-                  icon={Phone}
-                  label="Phone"
-                  {...register("contactInfo.mobile")}
-                />
-                <InputField
-                  icon={Linkedin}
-                  label="LinkedIn"
-                  {...register("contactInfo.linkedin")}
-                />
-                <InputField
-                  icon={Twitter}
-                  label="Twitter"
-                  {...register("contactInfo.twitter")}
-                />
-              </Grid>
-            </Section>
-
-            <TextSection
-              title="Professional Summary"
-              name="summary"
-              control={control}
-            />
-            <TextSection title="Skills" name="skills" control={control} />
-
-            <EntrySection title="Work Experience" name="experience" />
-            <EntrySection title="Education" name="education" />
-            <EntrySection title="Projects" name="projects" />
-          </form>
-        </TabsContent>
-
-        {/* PREVIEW */}
-        <TabsContent value="preview">
-          <Card className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10">
-            <CardHeader className="flex flex-row justify-between items-center">
-              <CardTitle>Resume Preview</CardTitle>
-              <Button
-                variant="ghost"
-                onClick={() =>
-                  setResumeMode(
-                    resumeMode === "preview" ? "edit" : "preview"
-                  )
-                }
-              >
-                {resumeMode === "preview" ? (
-                  <>
-                    <Edit className="h-4 w-4" />
-                    Edit Markdown
-                  </>
-                ) : (
-                  <>
-                    <Monitor className="h-4 w-4" />
-                    Preview
-                  </>
-                )}
+          <div className="flex gap-2">
+            {!isEditing && (
+              <Button onClick={() => { setIsEditing(true); setActiveTab("edit"); }}>
+                <Pencil className="h-4 w-4" /> Edit Resume
               </Button>
-            </CardHeader>
+            )}
 
-            <CardContent>
-              {resumeMode !== "preview" && (
-                <div className="flex gap-2 p-3 mb-4 rounded-md border border-amber-500 text-amber-600">
-                  <AlertTriangle className="h-5 w-5" />
-                  Editing markdown will override form changes.
-                </div>
-              )}
+            {isEditing && (
+              <>
+                <Button onClick={handleSubmit(onSubmit)} disabled={isSaving}>
+                  {isSaving ? <Loader2 className="animate-spin" /> : <Save />} Save
+                </Button>
+                <Button variant="outline" onClick={cancelEdit}>
+                  <X className="h-4 w-4" /> Cancel
+                </Button>
+              </>
+            )}
 
-              <MDEditor
-                value={previewContent}
-                onChange={setPreviewContent}
-                height={800}
-                preview={resumeMode}
-              />
-            </CardContent>
-          </Card>
-
-          <div className="hidden">
-            <div id="resume-pdf">
-              <MDEditor.Markdown
-                source={previewContent}
-                style={{ background: "white", color: "black" }}
-              />
-            </div>
+            <Button
+              variant="secondary"
+              onClick={generatePDF}
+              disabled={isGenerating}
+            >
+              {isGenerating ? <Loader2 className="animate-spin" /> : <Download />} Export PDF
+            </Button>
           </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+        </div>
+
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+          <TabsList>
+            <TabsTrigger value="edit">Form</TabsTrigger>
+            <TabsTrigger value="preview">Preview</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="edit">
+            <form
+              className={`space-y-8 ${
+                isEditing ? "" : "pointer-events-none opacity-60"
+              }`}
+            >
+              <Section title="Contact Information">
+                <Grid>
+                  <InputField icon={Mail} label="Email" {...register("contactInfo.email")} />
+                  <InputField icon={Phone} label="Phone" {...register("contactInfo.mobile")} />
+                  <InputField icon={Linkedin} label="LinkedIn" {...register("contactInfo.linkedin")} />
+                  <InputField icon={Twitter} label="Twitter" {...register("contactInfo.twitter")} />
+                </Grid>
+              </Section>
+
+              <TextSection title="Professional Summary" name="summary" control={control} />
+              <TextSection title="Skills" name="skills" control={control} />
+              <EntrySection title="Work Experience" name="experience" control={control} />
+              <EntrySection title="Education" name="education" control={control} />
+              <EntrySection title="Projects" name="projects" control={control} />
+            </form>
+          </TabsContent>
+
+          <TabsContent value="preview">
+            <MDEditor.Markdown source={previewContent} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </>
   );
 }
 
-/* ---------------- Helper Components ---------------- */
+/* helpers unchanged */
 
-function Section({ title, children }) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <Card className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10">
+    <Card>
       <CardHeader>
-        <CardTitle className="tracking-tight">{title}</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>{children}</CardContent>
     </Card>
   );
 }
 
-function Grid({ children }) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {children}
-    </div>
-  );
+function Grid({ children }: { children: React.ReactNode }) {
+  return <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{children}</div>;
 }
 
-function InputField({ label, icon: Icon, ...props }) {
+function InputField({
+  label,
+  icon: Icon,
+  ...props
+}: {
+  label: string;
+  icon: React.ElementType;
+} & React.ComponentProps<typeof Input>) {
   return (
     <div className="space-y-1">
-      <label className="text-sm font-medium flex items-center gap-2">
-        <Icon className="h-4 w-4 text-muted-foreground" />
-        {label}
+      <label className="flex items-center gap-2 text-sm">
+        <Icon className="h-4 w-4" /> {label}
       </label>
       <Input {...props} />
     </div>
   );
 }
 
-function TextSection({ title, name, control }) {
+function TextSection({
+  title,
+  name,
+  control,
+}: {
+  title: string;
+  name: FieldPathByValue<ResumeFormValues, string>;
+  control: Control<ResumeFormValues>;
+}) {
   return (
     <Section title={title}>
       <Controller
         name={name}
         control={control}
         render={({ field }) => (
-          <Textarea
-            {...field}
-            className="min-h-[140px]"
-            placeholder={`Enter ${title.toLowerCase()}...`}
-          />
+          <Textarea {...field} value={field.value ?? ""} className="min-h-[140px]" />
         )}
       />
     </Section>
   );
 }
 
-function EntrySection({ title, name }) {
+function EntrySection({
+  title,
+  name,
+  control,
+}: {
+  title: "Work Experience" | "Education" | "Projects";
+  name: "experience" | "education" | "projects";
+  control: Control<ResumeFormValues>;
+}) {
+  const map = {
+    "Work Experience": "Experience",
+    Education: "Education",
+    Projects: "Project",
+  } as const;
+
   return (
     <Section title={title}>
       <Controller
         name={name}
-        control={useForm().control}
+        control={control}
         render={({ field }) => (
           <EntryForm
-            type={title}
+            type={map[title]}
             entries={field.value}
             onChange={field.onChange}
           />
