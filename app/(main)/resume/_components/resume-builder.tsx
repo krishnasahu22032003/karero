@@ -1,6 +1,6 @@
 "use client";
 import jsPDF from "jspdf";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   useForm,
   Controller,
@@ -17,7 +17,8 @@ import {
   Linkedin,
   Twitter,
   Pencil,
-  X,
+  Monitor,
+  AlertTriangle,
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import MDEditor from "@uiw/react-md-editor";
@@ -28,6 +29,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { useTheme } from "next-themes";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import {
@@ -46,7 +48,7 @@ import type { ResumeFormValues } from "../../../../types/resume-form.types";
 
 export const resumeSchema = z.object({
   contactInfo: z.object({
-    email: z.string().email(),
+    email: z.string().email().optional(),
     mobile: z.string().optional(),
     linkedin: z.string().optional(),
     twitter: z.string().optional(),
@@ -58,16 +60,20 @@ export const resumeSchema = z.object({
   projects: z.array(z.any()),
 });
 
-export default function ResumeBuilder({ initialContent }: { initialContent?: string }) {
+export default function ResumeBuilder({
+  initialContent,
+}: {
+  initialContent?: string;
+}) {
   const { user } = useUser();
 
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<"edit" | "preview">("preview");
-  const [isEditing, setIsEditing] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  const lastSavedContent = useRef(initialContent ?? "");
+  const [activeTab, setActiveTab] = useState<"edit" | "preview">(
+    initialContent ? "preview" : "edit"
+  );
+  const [resumeMode, setResumeMode] = useState<"preview" | "edit">("preview");
   const [previewContent, setPreviewContent] = useState(initialContent ?? "");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
@@ -91,14 +97,15 @@ export default function ResumeBuilder({ initialContent }: { initialContent?: str
     const parts: string[] = [];
     const c = formValues.contactInfo;
 
-    if (c?.email) parts.push(`Email: ${c.email}`);
-    if (c?.mobile) parts.push(`Phone: ${c.mobile}`);
-    if (c?.linkedin) parts.push(`[LinkedIn](${c.linkedin})`);
-    if (c?.twitter) parts.push(`[Twitter](${c.twitter})`);
+    if (c?.email) parts.push(`📧 ${c.email}`);
+    if (c?.mobile) parts.push(`📱 ${c.mobile}`);
+    if (c?.linkedin) parts.push(`💼 [LinkedIn](${c.linkedin})`);
+    if (c?.twitter) parts.push(`🐦 [Twitter](${c.twitter})`);
 
     if (!parts.length) return "";
 
-    return `# ${user?.fullName ?? ""}\n${parts.join(" · ")}`;
+    return `## <div align="center">${user?.fullName ?? ""}</div>
+\n<div align="center">\n\n${parts.join(" | ")}\n\n</div>`;
   }
 
   function getCombinedContent() {
@@ -116,31 +123,25 @@ export default function ResumeBuilder({ initialContent }: { initialContent?: str
       .join("\n\n");
   }
 
+  // ✅ Sync form → markdown ONLY when editing form
   useEffect(() => {
-    if (isEditing) {
+    if (activeTab === "edit") {
       setPreviewContent(getCombinedContent());
     }
-  }, [formValues, isEditing]);
-
+  }, [formValues, activeTab]);
+const { theme } = useTheme();
   if (!mounted) return null;
 
   const onSubmit = async () => {
     toast.loading("Saving resume...", { id: "save" });
     try {
       await saveResumeFn(previewContent.trim());
-      lastSavedContent.current = previewContent;
-      setIsEditing(false);
-      setActiveTab("preview");
       toast.success("Resume saved successfully", { id: "save" });
+      setActiveTab("preview");
+      setResumeMode("preview");
     } catch {
       toast.error("Failed to save resume", { id: "save" });
     }
-  };
-
-  const cancelEdit = () => {
-    setPreviewContent(lastSavedContent.current);
-    setIsEditing(false);
-    setActiveTab("preview");
   };
 
   const generatePDF = async () => {
@@ -205,34 +206,62 @@ export default function ResumeBuilder({ initialContent }: { initialContent?: str
     <>
       <Toaster richColors position="top-right" />
 
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-4xl font-bold">Resume Builder</h1>
+      <div className=" space-y-6 md:-mt-14  -mt-14">
+      <div className="flex justify-between items-center">
+  {/* Header with underline effect */}
+  <div className="group relative w-full">
+    <h1
+      className="
+        text-3xl sm:text-5xl md:text-5xl
+        font-extrabold tracking-tight leading-tight
+        bg-clip-text text-transparent
+        bg-linear-to-r from-neutral-700 via-neutral-400 to-neutral-400
+        dark:from-neutral-200 dark:via-neutral-100 dark:to-white
+        drop-shadow-[0_4px_18px_rgba(0,0,0,0.25)]
+      "
+    >
+      Resume Builder
+    </h1>
+
+    {/* FULL-WIDTH HOVER UNDERLINE */}
+    <div
+      className="
+        h-[3px]
+        w-full
+        mt-2 sm:mt-3
+        scale-x-0 origin-left
+        group-hover:scale-x-100
+        bg-linear-to-r from-neutral-400 via-neutral-200 to-white
+        dark:from-neutral-500 dark:via-neutral-300 dark:to-white
+        transition-transform duration-700 ease-out
+        rounded-full
+      "
+    />
+  </div>
+
 
           <div className="flex gap-2">
-            {!isEditing && (
-              <Button onClick={() => { setIsEditing(true); setActiveTab("edit"); }}>
-                <Pencil className="h-4 w-4" /> Edit Resume
-              </Button>
-            )}
-
-            {isEditing && (
-              <>
-                <Button onClick={handleSubmit(onSubmit)} disabled={isSaving}>
-                  {isSaving ? <Loader2 className="animate-spin" /> : <Save />} Save
-                </Button>
-                <Button variant="outline" onClick={cancelEdit}>
-                  <X className="h-4 w-4" /> Cancel
-                </Button>
-              </>
-            )}
+            <Button
+            className="cursor-pointer"
+              variant="default"
+              onClick={handleSubmit(onSubmit)}
+              disabled={isSaving}
+            >
+              {isSaving ? <Loader2 className="animate-spin" /> : <Save />}
+              Save
+            </Button>
 
             <Button
               variant="secondary"
               onClick={generatePDF}
               disabled={isGenerating}
             >
-              {isGenerating ? <Loader2 className="animate-spin" /> : <Download />} Export PDF
+              {isGenerating ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Download />
+              )}
+              Export PDF
             </Button>
           </div>
         </div>
@@ -240,15 +269,11 @@ export default function ResumeBuilder({ initialContent }: { initialContent?: str
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
           <TabsList>
             <TabsTrigger value="edit">Form</TabsTrigger>
-            <TabsTrigger value="preview">Preview</TabsTrigger>
+            <TabsTrigger value="preview">Markdown</TabsTrigger>
           </TabsList>
 
           <TabsContent value="edit">
-            <form
-              className={`space-y-8 ${
-                isEditing ? "" : "pointer-events-none opacity-60"
-              }`}
-            >
+            <form className="space-y-8">
               <Section title="Contact Information">
                 <Grid>
                   <InputField icon={Mail} label="Email" {...register("contactInfo.email")} />
@@ -267,7 +292,54 @@ export default function ResumeBuilder({ initialContent }: { initialContent?: str
           </TabsContent>
 
           <TabsContent value="preview">
-            <MDEditor.Markdown source={previewContent} />
+            <Button
+              variant="link"
+              className="mb-2"
+              onClick={() =>
+                setResumeMode(resumeMode === "preview" ? "edit" : "preview")
+              }
+            >
+              {resumeMode === "preview" ? (
+                <>
+                  <Pencil className="h-4 w-4 cursor-pointer" /> Edit Markdown
+                </>
+              ) : (
+                <>
+                  <Monitor className="h-4 w-4 cursor-pointer" /> Show Preview
+                </>
+              )}
+            </Button>
+
+            {resumeMode === "edit" && (
+              <div className="flex gap-2 items-center border-2 border-yellow-600 text-yellow-600 rounded p-3 mb-3">
+                <AlertTriangle className="h-5 w-5" />
+                <span className="text-sm">
+                  Editing markdown directly will stop form auto-sync.
+                </span>
+              </div>
+            )}
+<div data-color-mode={theme === "dark" ? "dark" : "light"}>
+  <MDEditor
+    value={previewContent}
+    onChange={(value) => setPreviewContent(value ?? "")}
+    preview={resumeMode}
+    height={800}
+  />
+</div>
+
+            <div className="hidden">
+  <div id="resume-pdf">
+    <MDEditor.Markdown
+      source={previewContent}
+      style={{
+        background: "white",
+        color: "black",
+        padding: "24px",
+      }}
+    />
+  </div>
+</div>
+
           </TabsContent>
         </Tabs>
       </div>

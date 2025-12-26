@@ -1,7 +1,7 @@
 // resume-form.types.ts
 export type ResumeFormValues = {
   contactInfo: {
-    email: string;
+    email?: string;
     mobile?: string;
     linkedin?: string;
     twitter?: string;
