@@ -29,7 +29,7 @@ type CoverLetter = {
   id: string;
   jobTitle: string;
   companyName: string;
-  jobDescription: string;
+  jobDescription: string | null;
   createdAt: string | Date;
 };
 
