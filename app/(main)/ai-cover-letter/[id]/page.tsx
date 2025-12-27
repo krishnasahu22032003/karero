@@ -27,12 +27,12 @@ export default async function EditCoverLetterPage({ params }: PageProps) {
   }
 
   return (
-    <div className="container mx-auto max-w-5xl py-8 space-y-8">
+    <div className="container mx-auto max-w-5xl py-8  px-4  sm:space-y-2 md:-mt-14 -mt-24">
       {/* Back */}
       <Link href="/ai-cover-letter">
         <Button
           variant="link"
-          className="gap-2 pl-0 text-muted-foreground hover:text-foreground"
+          className="gap-2 text-muted-foreground hover:text-foreground cursor-pointer "
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Cover Letters
@@ -41,14 +41,12 @@ export default async function EditCoverLetterPage({ params }: PageProps) {
 
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-md bg-indigo-500/10 flex items-center justify-center">
-          <FileText className="h-5 w-5 text-indigo-500" />
-        </div>
+  
         <div>
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight ">
             {coverLetter.jobTitle}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-md text-muted-foreground">
             {coverLetter.companyName}
           </p>
         </div>

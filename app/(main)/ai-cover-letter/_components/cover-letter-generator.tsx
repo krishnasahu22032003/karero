@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 
 type CoverLetterFormData = z.infer<typeof coverLetterSchema>;
 
-export default function CoverLetterGenerator() {
+export default function     CoverLetterGenerator() {
   const router = useRouter();
 
   const {
@@ -65,10 +65,10 @@ export default function CoverLetterGenerator() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="h-9 w-9 rounded-md bg-indigo-500/10 flex items-center justify-center">
-          <FileText className="h-5 w-5 text-indigo-500" />
+          <FileText className="h-5 w-5 text-neutral-500 dark:text-neutral-200" />
         </div>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight">
             AI Cover Letter Generator
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -150,7 +150,7 @@ export default function CoverLetterGenerator() {
               <Button
                 type="submit"
                 disabled={generating}
-                className="min-w-[180px]"
+                className="min-w-[180px] cursor-pointer"
               >
                 {generating ? (
                   <>

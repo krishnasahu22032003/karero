@@ -2,7 +2,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Loading() {
   return (
-    <div className="container mx-auto max-w-5xl py-16 md:-mt-14  -mt-14">
+    <div className="container mx-auto max-w-5xl px-4 py-16 md:-mt-14  -mt-24">
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <div

@@ -8,7 +8,7 @@ export default async function CoverLetterPage() {
   const coverLetters = await getCoverLetters();
 
   return (
-    <div className="container mx-auto max-w-5xl py-8 space-y-8 md:-mt-14 -mt-14">
+    <div className="container mx-auto max-w-5xl px-4 py-8 space-y-8 md:-mt-14 -mt-24">
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
         
