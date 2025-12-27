@@ -243,6 +243,7 @@ export function EntryForm({ type, entries, onChange }: EntryFormProps) {
             <Button
               type="button"
               variant="ghost"
+              className="cursor-pointer"
               size="sm"
               onClick={handleImproveDescription}
               disabled={isImproving || !description}
@@ -264,6 +265,7 @@ export function EntryForm({ type, entries, onChange }: EntryFormProps) {
           <CardFooter className="flex justify-end gap-2">
             <Button
               variant="outline"
+              className="cursor-pointer"
               onClick={() => {
                 reset();
                 setIsAdding(false);
@@ -271,7 +273,7 @@ export function EntryForm({ type, entries, onChange }: EntryFormProps) {
             >
               Cancel
             </Button>
-            <Button onClick={handleAdd}>
+            <Button onClick={handleAdd} className="cursor-pointer">
               <PlusCircle className="h-4 w-4 mr-2" />
               Add Entry
             </Button>
@@ -282,7 +284,7 @@ export function EntryForm({ type, entries, onChange }: EntryFormProps) {
       {!isAdding && (
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full cursor-pointer" 
           onClick={() => setIsAdding(true)}
         >
           <PlusCircle className="h-4 w-4 mr-2" />

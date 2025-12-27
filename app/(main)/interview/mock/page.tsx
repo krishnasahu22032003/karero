@@ -5,7 +5,7 @@ import Quiz from "../_components/quiz";
 
 export default function MockInterviewPage() {
   return (
-    <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-14 -mt-14">
+    <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-14 md:-mt-14 mt-24">
       <div className="space-y-10">
         <div className="flex flex-col items-start gap-3">
           <Link href="/interview">
@@ -19,7 +19,7 @@ export default function MockInterviewPage() {
           </Link>
 
           {/* ✅ FULL-WIDTH HEADER (Industry Insights pattern) */}
-          <div className="group relative w-full md:-mt-14 mt-14">
+          <div className="group relative w-full ">
             <h1
               className="
                 text-3xl md:text-5xl lg:text-5xl

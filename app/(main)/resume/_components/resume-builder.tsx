@@ -76,19 +76,24 @@ export default function ResumeBuilder({
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => setMounted(true), []);
-
-  const { control, register, handleSubmit, watch } =
-    useForm<ResumeFormValues>({
-      resolver: zodResolver(resumeSchema),
-      defaultValues: {
-        contactInfo: {},
-        summary: "",
-        skills: "",
-        experience: [],
-        education: [],
-        projects: [],
+const { control, register, handleSubmit, watch } =
+  useForm<ResumeFormValues>({
+    resolver: zodResolver(resumeSchema),
+    shouldUnregister: false, // ✅ FIX
+    defaultValues: {
+      contactInfo: {
+        email: "",
+        mobile: "",
+        linkedin: "",
+        twitter: "",
       },
-    });
+      summary: "",
+      skills: "",
+      experience: [],
+      education: [],
+      projects: [],
+    },
+  });
 
   const { loading: isSaving, fn: saveResumeFn } = useFetch(saveResume);
   const formValues = watch();

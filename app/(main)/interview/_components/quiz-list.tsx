@@ -53,7 +53,7 @@ export default function QuizList({ assessments }: QuizListProps) {
 
             <Button
               onClick={() => router.push("/interview/mock")}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto cursor-pointer"
             >
               Start New Quiz
             </Button>

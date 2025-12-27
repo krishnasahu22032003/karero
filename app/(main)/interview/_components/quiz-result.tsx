@@ -161,7 +161,7 @@ export default function QuizResult({
         <CardFooter className="px-0 pt-2 sm:pt-4">
           <Button
             onClick={onStartNew}
-            className="w-full h-11"
+            className="w-full h-11 cursor-pointer"
           >
             Start New Quiz
           </Button>

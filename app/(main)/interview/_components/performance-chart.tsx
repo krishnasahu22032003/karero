@@ -40,33 +40,40 @@ export default function PerformanceChart({
 }: PerformanceChartProps) {
   const [chartData, setChartData] = useState<ChartPoint[]>([]);
 
-  useEffect(() => {
-       console.log("🟢 PerformanceChart props:", assessments);
-    if (!assessments || assessments.length === 0) {
+useEffect(() => {
+  if (!assessments || assessments.length === 0) {
+    setChartData([]);
+    return;
+  }
 
-      setChartData([]);
-      return;
-    }
+  const formatted: ChartPoint[] = assessments
+    .filter(a => a.quizScore != null)
+    .sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() -
+        new Date(b.createdAt).getTime()
+    )
+    .map((a) => {
+      const rawScore =
+        typeof a.quizScore === "string"
+          ? a.quizScore.replace(/[^\d.]/g, "")
+          : a.quizScore;
 
-    const formatted: ChartPoint[] = assessments
-      .filter(a => a.quizScore != null) // 🔑 remove broken entries
-      .sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() -
-          new Date(b.createdAt).getTime()
-      )
-      .map((a) => {
-        const score = Number(a.quizScore);
+      const numericScore = Number(rawScore);
+      const safeScore = Number.isFinite(numericScore) ? numericScore : 0;
 
-        return {
-          date: format(new Date(a.createdAt), "MMM dd"),
-          score: Number.isFinite(score) ? score : 0,
-          scoreArea: Number.isFinite(score) ? score : 0,
-        };
-      });
+      return {
+        date: format(new Date(a.createdAt), "MMM dd"),
+        score: safeScore,
+        scoreArea: safeScore,
+      };
+    });
 
-    setChartData(formatted);
-  }, [assessments]);
+  setChartData(formatted);
+}, [assessments]);
+
+
+
 
   const isSinglePoint = chartData.length === 1;
 
@@ -82,7 +89,7 @@ export default function PerformanceChart({
       </CardHeader>
 
       <CardContent>
-        <div className="h-[260px] sm:h-[320px]">
+        <div className="h-[260px] sm:h-80">
           {chartData.length ? (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>

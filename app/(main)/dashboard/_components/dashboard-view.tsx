@@ -129,7 +129,7 @@ export default function DashboardView({ insights }: { insights: Insights }) {
 
         <button
           onClick={exportCSV}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition"
+          className="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-md text-sm bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition"
         >
           <Download size={14} /> Export CSV
         </button>
