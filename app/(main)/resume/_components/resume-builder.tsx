@@ -206,7 +206,7 @@ const { theme } = useTheme();
     <>
       <Toaster richColors position="top-right" />
 
-      <div className=" space-y-6 md:-mt-14  -mt-14">
+      <div className=" space-y-6  md:-mt-14  -mt-24">
       <div className="flex justify-between items-center">
   {/* Header with underline effect */}
   <div className="group relative w-full">
@@ -294,7 +294,7 @@ const { theme } = useTheme();
           <TabsContent value="preview">
             <Button
               variant="link"
-              className="mb-2"
+              className="mb-2 cursor-pointer"
               onClick={() =>
                 setResumeMode(resumeMode === "preview" ? "edit" : "preview")
               }
