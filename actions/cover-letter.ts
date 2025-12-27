@@ -125,9 +125,11 @@ export async function getCoverLetter(id:string) {
     where: { clerkUserId: userId },
   });
 
+  console.log("DB user id:", user?.id);
+  console.log("Requested cover letter id:", id);
   if (!user) throw new Error("User not found");
 
-  return await prisma.coverLetter.findUnique({
+  return await prisma.coverLetter.findFirst({
     where: {
       id,
       userId: user.id,
@@ -145,7 +147,7 @@ export async function deleteCoverLetter(id:string) {
 
   if (!user) throw new Error("User not found");
 
-  return await prisma.coverLetter.delete({
+  return await prisma.coverLetter.deleteMany({
     where: {
       id,
       userId: user.id,
