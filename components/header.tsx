@@ -33,8 +33,7 @@ import ModeToggle from "./ui/mode-toggle";
 import { CheckUser } from "@/lib/checkUser";
 
 export default async function Header() {
-  await CheckUser();
-  const { userId } = await auth();
+
 
   return (
     <header className="w-full border-b border-white/10 dark:border-white/10 backdrop-blur-md sticky top-0 z-50">
