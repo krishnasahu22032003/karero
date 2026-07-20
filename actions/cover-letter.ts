@@ -71,7 +71,7 @@ Return only the completed cover letter in Markdown format.
 
   try {
  const result = await ai.models.generateContent({
-  model: "gemini-3.5-flash",
+  model: "gemini-3-flash-preview",
   contents: prompt,
 });
 const content = result.text?.trim();

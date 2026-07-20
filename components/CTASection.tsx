@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const Tilt = ({ children }: { children: React.ReactNode }) => {
@@ -37,7 +37,7 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
         className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 group-hover:opacity-20 transition duration-500"
         style={{
           background:
-            "radial-linear(circle at 50% 25%, rgba(255,255,255,0.15), transparent 70%)",
+            "radial-gradient(circle at 50% 25%, rgba(255,255,255,0.15), transparent 70%)",
         }}
       />
 
@@ -45,7 +45,7 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
         className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 group-hover:opacity-25 transition duration-500"
         style={{
           background:
-            "linear-linear(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05), rgba(255,255,255,0.1))",
+            "linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05), rgba(255,255,255,0.1))",
         }}
       />
 
@@ -61,8 +61,30 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+type Particle = {
+  top: number;
+  left: number;
+  duration: number;
+  delay: number;
+  dx: number;
+};
+
 export default function CTASection() {
-    const router  = useRouter()
+  const router = useRouter();
+  const [particles, setParticles] = useState<Particle[]>([]);
+
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 30 }, () => ({
+        top: Math.random() * 100,
+        left: Math.random() * 100,
+        duration: 4 + Math.random() * 2,
+        delay: Math.random() * 2,
+        dx: (Math.random() - 0.5) * 70,
+      }))
+    );
+  }, []);
+
   return (
     <section
       id="cta"
@@ -81,30 +103,29 @@ export default function CTASection() {
       />
 
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(30)].map((_, i) => (
+        {particles.map((p, i) => (
           <motion.span
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{
               opacity: [0, 0.5, 0],
               y: [-40, -100],
-              x: [0, (Math.random() - 0.5) * 70],
+              x: [0, p.dx],
             }}
             transition={{
-              duration: 4 + Math.random() * 2,
+              duration: p.duration,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: p.delay,
               ease: "easeOut",
             }}
             className="absolute w-[3px] h-[3px] bg-black/20 dark:bg-white/20 rounded-full"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              top: `${p.top}%`,
+              left: `${p.left}%`,
             }}
           />
         ))}
       </div>
-
 
       <Tilt>
         <motion.div
@@ -126,7 +147,6 @@ export default function CTASection() {
             overflow-hidden
           "
         >
-       
           <motion.div
             className="
               absolute -top-28 -right-28 w-[380px] h-[380px]
@@ -150,7 +170,7 @@ export default function CTASection() {
           >
             Ready to{" "}
             <span className="text-neutral-500 dark:text-neutral-300">
-              Say About Karero
+              Say Hello to Karero
             </span>
           </motion.h2>
 
@@ -176,23 +196,22 @@ export default function CTASection() {
             transition={{ duration: 0.7, delay: 0.15 }}
             className="mt-10 flex justify-center"
           >
-
-              <motion.button
-                onClick={()=>router.push("/sign-in")}
-                whileHover={{ scale: 1.06 }}
-                whileTap={{ scale: 0.96 }}
-                className="
-                  px-4 py-2 rounded-full font-semibold text-lg
-                  bg-black text-white 
-                  dark:bg-white dark:text-black
-                  shadow-[0_10px_35px_rgba(0,0,0,0.25)]
-                  dark:shadow-[0_15px_50px_rgba(255,255,255,0.12)]
-                  flex items-center gap-2 transition-all cursor-pointer
-                "
-              >
-                Start Your Journey
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
+            <motion.button
+              onClick={() => router.push("/sign-in")}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.96 }}
+              className="
+                px-4 py-2 rounded-full font-semibold text-lg
+                bg-black text-white 
+                dark:bg-white dark:text-black
+                shadow-[0_10px_35px_rgba(0,0,0,0.25)]
+                dark:shadow-[0_15px_50px_rgba(255,255,255,0.12)]
+                flex items-center gap-2 transition-all cursor-pointer
+              "
+            >
+              Start Your Journey
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
           </motion.div>
         </motion.div>
       </Tilt>

@@ -108,7 +108,7 @@ Return ONLY the rewritten paragraph.
 
   try {
 const result = await ai.models.generateContent({
-  model: "gemini-3.5-flash",
+  model: "gemini-3-flash-preview",
   contents: prompt,
 });
 

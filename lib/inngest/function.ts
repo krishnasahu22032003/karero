@@ -69,7 +69,7 @@ export const generateIndustryInsights = inngest.createFunction(
 
 const result = await step.run("AI Generate Insights", async () => {
   const res = await ai.models.generateContent({
-    model: "gemini-3.5-flash",
+    model: "gemini-3-flash-preview",
     contents: prompt,
   });
 

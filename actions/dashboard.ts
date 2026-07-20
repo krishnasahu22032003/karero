@@ -56,7 +56,7 @@ export const generateAIInsights = async (industry: string | null) => {
   `;
 
 const result = await ai.models.generateContent({
-  model: "gemini-3.5-flash",
+  model: "gemini-3-flash-preview",
   contents: prompt,
 });
 

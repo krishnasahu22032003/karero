@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, FileText } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getCoverLetter } from "@/actions/cover-letter";
@@ -13,7 +13,6 @@ type PageProps = {
 };
 
 export default async function EditCoverLetterPage({ params }: PageProps) {
-  // ✅ REQUIRED: unwrap params Promise
   const { id } = await params;
 
   if (!id) {
@@ -27,7 +26,7 @@ export default async function EditCoverLetterPage({ params }: PageProps) {
   }
 
   return (
-    <div className="container mx-auto max-w-5xl py-8  px-4  sm:space-y-2 md:-mt-14 -mt-24">
+    <div className="container mx-auto max-w-5xl py-8  px-4  sm:space-y-2 md:-mt-18 -mt-24">
       {/* Back */}
       <Link href="/ai-cover-letter">
         <Button
@@ -43,10 +42,10 @@ export default async function EditCoverLetterPage({ params }: PageProps) {
       <div className="flex items-center gap-3">
   
         <div>
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight ">
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight ">
             {coverLetter.jobTitle}
           </h1>
-          <p className="text-md text-muted-foreground">
+          <p className="text-md text-xl text-muted-foreground">
             {coverLetter.companyName}
           </p>
         </div>

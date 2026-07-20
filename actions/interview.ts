@@ -56,7 +56,7 @@ Return the final response in this exact JSON structure:
 `;
 
   const result = await client.models.generateContent({
-    model: "gemini-3.5-flash",
+    model: "gemini-3-flash-preview",
     contents: prompt,
 });
 
@@ -134,7 +134,7 @@ Requirements:
         try {
 
      const tipResult = await client.models.generateContent({
-    model: "gemini-3.5-flash",
+    model: "gemini-3-flash-preview",
     contents: improvementPrompt,
 })
 improvementTip = tipResult.text?.trim() ?? null
