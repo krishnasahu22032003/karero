@@ -68,7 +68,7 @@ export default function Hero() {
 
 
   return (
-    <section id="hero" className="relative h-screen w-full max-w-[1400px] mx-auto px-6 md:px-12 pt-8 md:pt-24">
+    <section id="hero" className="relative h-screen w-full max-w-[1400px] mx-auto px-6 md:px-12 pt-8 md:pt-18">
 
       <motion.div
         aria-hidden

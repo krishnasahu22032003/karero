@@ -42,8 +42,11 @@ function normalizeAI(ai: any) {
 }
 
 export const generateIndustryInsights = inngest.createFunction(
-  {  id: "generate-industry-insights", name: "Generate Industry Insights" },
-  { cron: "0 0 * * 0" }, 
+  {
+    id: "generate-industry-insights",
+    name: "Generate Industry Insights",
+    triggers: { cron: "0 0 * * 0" },
+  },
   async ({ step }) => {
     const industries = await step.run("Fetch industries", async () => {
       return prisma.industryInsight.findMany({ distinct: ["industry"], select: { industry: true }})
@@ -74,7 +77,7 @@ const result = await step.run("AI Generate Insights", async () => {
   });
 
   const text = res.text || "";
-  const cleaned = text.replace(/```[\s\S]*?```/g, "").trim();
+const cleaned = text.replace(/```json/gi, "").replace(/```/g, "").trim();
 
   return JSON.parse(cleaned);
 });
