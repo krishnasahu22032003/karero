@@ -45,6 +45,7 @@ import { useUser } from "@clerk/nextjs";
 import { entriesToMarkdown } from "@/app/lib/helper";
 import { z } from "zod";
 import type { ResumeFormValues } from "../../../../types/resume-form.types";
+import html2canvas from "html2canvas-pro";
 
 export const resumeSchema = z.object({
   contactInfo: z.object({
@@ -149,63 +150,52 @@ const { theme } = useTheme();
     }
   };
 
-  const generatePDF = async () => {
-    if (isGenerating) return;
+const generatePDF = async () => {
+  if (isGenerating) return;
 
-    toast.loading("Generating PDF...", { id: "pdf" });
-    setIsGenerating(true);
+  toast.loading("Generating PDF...", { id: "pdf" });
+  setIsGenerating(true);
 
-    try {
-      const doc = new jsPDF("p", "mm", "a4");
+  try {
+    const element = document.getElementById("resume-pdf");
+    if (!element) throw new Error("Resume content not found");
 
-      const marginX = 20;
-      const marginY = 20;
-      const lineHeight = 7;
-      const maxWidth = 170;
-      let cursorY = marginY;
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+    });
 
-      const lines = previewContent.split("\n");
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
 
-      doc.setFont("Times", "Normal");
-      doc.setFontSize(11);
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      for (const line of lines) {
-        if (cursorY > 280) {
-          doc.addPage();
-          cursorY = marginY;
-        }
+    let heightLeft = imgHeight;
+    let position = 0;
 
-        if (line.startsWith("# ")) {
-          doc.setFontSize(18);
-          doc.setFont("Times", "Bold");
-          doc.text(line.replace("# ", ""), marginX, cursorY);
-          cursorY += lineHeight + 4;
-          doc.setFontSize(11);
-          doc.setFont("Times", "Normal");
-        } else if (line.startsWith("## ")) {
-          doc.setFontSize(14);
-          doc.setFont("Times", "Bold");
-          doc.text(line.replace("## ", ""), marginX, cursorY);
-          cursorY += lineHeight + 2;
-          doc.setFontSize(11);
-          doc.setFont("Times", "Normal");
-        } else if (line.trim() === "") {
-          cursorY += lineHeight / 2;
-        } else {
-          const wrapped = doc.splitTextToSize(line, maxWidth);
-          doc.text(wrapped, marginX, cursorY);
-          cursorY += wrapped.length * lineHeight;
-        }
-      }
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
 
-      doc.save("resume.pdf");
-      toast.success("PDF exported successfully", { id: "pdf" });
-    } catch {
-      toast.error("Failed to export PDF", { id: "pdf" });
-    } finally {
-      setIsGenerating(false);
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
     }
-  };
+
+    pdf.save("resume.pdf");
+    toast.success("PDF exported successfully", { id: "pdf" });
+  } catch (err) {
+    console.error("PDF export error:", err);
+    toast.error("Failed to export PDF", { id: "pdf" });
+  } finally {
+    setIsGenerating(false);
+  }
+};
 
   return (
     <>
@@ -332,21 +322,27 @@ const { theme } = useTheme();
   />
 </div>
 
-            <div className="hidden">
-  <div id="resume-pdf">
+          </TabsContent>
+        </Tabs>
+        <div className="fixed top-0 -left-[9999px]">
+  <div
+    id="resume-pdf"
+    style={{
+      width: "800px",
+      backgroundColor: "#ffffff",
+      color: "#000000",
+    }}
+  >
     <MDEditor.Markdown
       source={previewContent}
       style={{
-        background: "white",
-        color: "black",
+        background: "#ffffff",
+        color: "#000000",
         padding: "24px",
       }}
     />
   </div>
 </div>
-
-          </TabsContent>
-        </Tabs>
       </div>
     </>
   );

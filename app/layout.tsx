@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+// @ts-ignore: side-effect import of CSS module without type declarations
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/ui/theme-provider";
@@ -38,7 +39,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
      
-
+<Header/>
             <main className="min-h-screen">
               {children}
             </main>

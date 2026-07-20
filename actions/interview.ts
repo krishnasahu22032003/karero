@@ -2,10 +2,10 @@
 
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "../lib/prisma"
-import OpenAI from "openai"
+import { GoogleGenAI } from "@google/genai"
 
-const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+const client = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY
 })
 
 export async function generateQuiz() {
@@ -55,12 +55,12 @@ Return the final response in this exact JSON structure:
 }
 `;
 
-        const result = await client.responses.create({
-            model: "gpt-4.1-mini",
-            input: prompt,
-        });
+  const result = await client.models.generateContent({
+    model: "gemini-3.5-flash",
+    contents: prompt,
+});
 
-        const raw = result.output_text ?? "";
+const raw = result.text ?? "";
         const cleaned = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
         const quiz = JSON.parse(cleaned)
 
@@ -133,11 +133,11 @@ Requirements:
 
         try {
 
-            const tipResult = await client.responses.create({
-                model: "gpt-4.1-mini",
-                input: improvementPrompt,
-            })
-            improvementTip = tipResult.output_text.trim()
+     const tipResult = await client.models.generateContent({
+    model: "gemini-3.5-flash",
+    contents: improvementPrompt,
+})
+improvementTip = tipResult.text?.trim() ?? null
 
         } catch (e) {
             console.error((e as Error).message)

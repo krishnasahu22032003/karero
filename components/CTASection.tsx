@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useRef, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Tilt = ({ children }: { children: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -62,6 +62,7 @@ const Tilt = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function CTASection() {
+    const router  = useRouter()
   return (
     <section
       id="cta"
@@ -175,12 +176,13 @@ export default function CTASection() {
             transition={{ duration: 0.7, delay: 0.15 }}
             className="mt-10 flex justify-center"
           >
-            <Link href="#home" scroll={true}>
+
               <motion.button
+                onClick={()=>router.push("/sign-in")}
                 whileHover={{ scale: 1.06 }}
                 whileTap={{ scale: 0.96 }}
                 className="
-                  px-8 py-4 rounded-full font-semibold text-lg
+                  px-4 py-2 rounded-full font-semibold text-lg
                   bg-black text-white 
                   dark:bg-white dark:text-black
                   shadow-[0_10px_35px_rgba(0,0,0,0.25)]
@@ -191,7 +193,6 @@ export default function CTASection() {
                 Start Your Journey
                 <ArrowRight className="w-5 h-5" />
               </motion.button>
-            </Link>
           </motion.div>
         </motion.div>
       </Tilt>

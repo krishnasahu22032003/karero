@@ -2,16 +2,13 @@
 
 import { prisma } from "../lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import OpenAI from "openai";
 import { revalidatePath } from "next/cache";
+import { GoogleGenAI } from "@google/genai";
 
-const ai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY!,
 });
 
-/* ---------------------------------- */
-/* Save Resume                         */
-/* ---------------------------------- */
 export async function saveResume(content: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
@@ -44,9 +41,6 @@ export async function saveResume(content: string) {
   }
 }
 
-/* ---------------------------------- */
-/* Get Resume                         */
-/* ---------------------------------- */
 export async function getResume() {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
@@ -64,9 +58,6 @@ export async function getResume() {
   });
 }
 
-/* ---------------------------------- */
-/* Improve Resume Content with AI     */
-/* ---------------------------------- */
 type ImproveWithAIInput = {
   current: string;
   type: string;
@@ -116,13 +107,12 @@ Return ONLY the rewritten paragraph.
 
 
   try {
-    const result = await ai.responses.create({
-      model: "gpt-4.1-mini",
-      input: prompt,
-    });
+const result = await ai.models.generateContent({
+  model: "gemini-3.5-flash",
+  contents: prompt,
+});
 
-    // ✅ SAME SAFE PATTERN AS YOUR INDUSTRY CODE
-    const raw = result.output_text ?? "";
+const raw = result.text ?? "";
 
     const cleaned = raw
       .replace(/```/g, "")
