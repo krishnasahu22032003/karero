@@ -13,8 +13,6 @@ Resume building, cover letters, mock interviews, and real-time industry insights
 [![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
-[Live Demo](#) · [Report Bug](#) · [Request Feature](#)
-
 </div>
 
 ---
